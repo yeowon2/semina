@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="act_0010">
+
+    <select id="act_taxesByCountry_list" resultType="ActIncmCd">
+        SELECT INCM_CD,
+               INCM_CLS,
+               HABT_CLS,
+               INCM_NM,
+               STAN_INCM_CD,
+               STAN_INCM_SEQ
+        FROM ACT_INCM_CD
+        WHERE USE_YN = 'Y'
+          AND INCM_NM LIKE '%' || #{incmNm} || '%'
+        ORDER BY INCM_CD
+    </select>
+    <select id="act_taxDetail_list" resultType="ActNtnRate">
+        SELECT A.NTN_CD,
+               B.NTN_NM,
+               A.INCM_RATE,
+               A.INHABT_RATE
+        FROM ACT_NTN_RATE A
+        INNER JOIN COM_NTN_MGT B ON A.NTN_CD = B.NTN_CD
+        WHERE A.INCM_CD = #{incmCd}
+    </select>
+</mapper>

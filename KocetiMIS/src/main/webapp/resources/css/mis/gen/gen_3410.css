@@ -1,0 +1,40 @@
+.body .search_container .top{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+.body .search_container .param_container{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+}
+.body .search_container .param_container> div {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    flex-grow: 1;
+
+}
+.body .search_container .param_container> div label{
+    flex-shrink: 0;
+}
+.body .search_container .param_container> div input ,.body .search_container .param_container> div select {
+    flex-grow: 1;
+    height: 30px;
+    border: 1px solid #ddd;
+    padding: 0 8px;
+    background-color: #fff;
+    border-radius: 3px;
+
+}
+.body .search_container .param_container> div input{
+    text-align: left;
+}
+.body .search_container .param_container> div select{
+    text-align: center;
+}
+
+.body #grid{
+    margin-top: 20px;
+}

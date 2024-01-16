@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="act_0009">
+
+    <select id="act_incm_list" resultType="ActIncmCd">
+        SELECT INCM_CD,
+               INCM_CLS,
+               STAN_INCM_CD,
+               STAN_INCM_SEQ,
+               INCM_NM,
+               NECES_TAX_RATE,
+               TAX_RATE,
+               HABT_CLS,
+               USE_YN,
+               MIN_TAX
+        FROM ACT_INCM_CD
+        WHERE HABT_CLS = DECODE(#{habtCls}, '', HABT_CLS, #{habtCls})
+        ORDER BY HABT_CLS, INCM_CD
+    </select>
+
+</mapper>

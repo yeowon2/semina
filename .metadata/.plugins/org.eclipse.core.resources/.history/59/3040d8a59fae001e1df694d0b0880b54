@@ -1,0 +1,15 @@
+package kr.co.kwins.bookshop.dao;
+
+import java.util.List;
+
+import kr.co.kwins.bookshop.model.Book;
+
+public class BookDaoImpl implements BookDao {
+
+	@Override
+	public List<Book> list() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

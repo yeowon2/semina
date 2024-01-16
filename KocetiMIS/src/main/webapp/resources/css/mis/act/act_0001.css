@@ -1,0 +1,143 @@
+.top .btn_container {
+    display: flex;
+    justify-content: right;
+}
+
+.top .btn_container button {
+    margin: 5px;
+}
+
+.param_container {
+    display: flex;
+    flex-direction: row;
+
+}
+
+.param_container > div {
+    margin: 1rem;
+}
+
+.bottom {
+    display: flex;
+}
+
+.bottom > div {
+    width: calc(50% - 10px);
+}
+
+.left {
+    margin-right: 10px;
+}
+
+.right {
+    margin-left: 10px;;
+}
+
+.left_top, .right_bottom_top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.button {
+    font-size: 0.6rem;
+    padding: 0.3rem 1rem;
+}
+
+.scroll_layout {
+    overflow-x: auto;
+    margin-top: 7px;
+}
+
+.scroll_layout::-webkit-scrollbar {
+    height: 7px;
+}
+
+.scroll_layout::-webkit-scrollbar-thumb {
+    background-color: #aaaaaa;
+    border-radius: 10px;
+}
+
+.scroll_layout::-webkit-scrollbar-track {
+    background-color: #eee;
+    border-radius: 10px
+}
+
+.acct_info_wrap .row {
+    display: flex;
+    margin-bottom: 5px;
+    align-items: center;
+
+}
+
+.acct_info_wrap {
+    margin-top: 5px;
+    min-width: 530px;
+
+}
+
+
+.acct_info_wrap .row select {
+    height: 30px;
+    border: 1px solid #ddd;
+    padding: 0 8px;
+    background-color: #fff;
+    border-radius: 3px;
+}
+
+.acct_info_wrap .row .col {
+    display: flex;
+    width: calc((100% - 10px) / 2);
+    align-items: center;
+
+}
+
+.acct_info_wrap .row > .col:first-child {
+    margin-right: 10px;
+}
+
+.acct_info_wrap .row label {
+    width: 90px;
+}
+
+.input, .search {
+    height: 30px;
+    border: 1px solid #ddd;
+    padding: 0 8px;
+    background-color: #fff;
+    border-radius: 3px;
+    width: calc(100% - 90px);
+}
+
+.input:focus, .search > input:focus, select:focus {
+    outline: none;
+}
+
+.lage_input {
+    width: calc(100% - 150px);
+    min-width: 100px;
+    margin-right: 10px;
+}
+
+.small_input {
+    width: 50px;
+}
+
+.search {
+    display: flex;
+}
+
+.search > input {
+    width: calc(100% - 32px);
+    border: none;
+}
+
+.search > button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.right_bottom {
+    margin-top: 20px;
+}

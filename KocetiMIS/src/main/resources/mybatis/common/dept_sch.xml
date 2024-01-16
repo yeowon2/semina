@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="deptSch">
+
+    <!-- 조직개편일 조회 -->
+    <select id = "findStructList" resultType = "HrmDeptStruct">
+        SELECT STRUCT_DT AS STRUCT_DT
+              ,TO_CHAR(TO_DATE(STRUCT_DT), 'YYYY-MM-DD') AS STRUCT_DT_NM
+        FROM HRM_DEPT_STRUCT
+        WHERE REORGAN_CONF_YN = 'Y'
+        ORDER BY STRUCT_DT DESC
+    </select>
+
+    <select id = "findByDeptList" resultType = "DeptTree">
+        SELECT A.DEPT_CD AS DEPT_CD
+              ,A.DEPT_NM AS DEPT_NM
+              ,A.DEPT_ENG_NM AS DEPT_ENG_NM
+              ,A.UP_DEPT_CD AS UP_DEPT_CD
+              ,FN_GET_DEPT_NM(A.UP_DEPT_CD) AS UP_DEPT_NM
+              ,A.LEV AS LEV
+              ,A.ORD_NO AS ORD_NO
+              ,A.STRUCT_DT AS STRUCT_DT
+              ,A.DEPT_GRP_CD AS DEPT_GRP_CD
+              ,A.POST_DEPT_CD AS POST_DEPT_CD
+              ,A.DEPT_EMP_NO AS DEPT_EMP_NO
+              ,A.TEAM_YN AS TEAM_YN
+              ,A.USE_YN AS USE_YN
+              ,A.DEPT_ORG_CD AS DEPT_ORG_CD
+        FROM HRM_ORGCHT A
+        INNER JOIN HRM_DEPT B
+            ON A.DEPT_CD = B.DEPT_CD
+        <trim prefix = "WHERE" prefixOverrides="AND">
+            <if test = "structDt != null and structDt != undefined and structDt != '' ">
+                AND A.STRUCT_DT = #{structDt}
+            </if>
+            <if test = "useYn != null and useYn != undefined and useYn != ''">
+                AND B.USE_YN = #{useYn}
+            </if>
+            <if test = "deptNm != null and deptNm != undefined and deptNm != ''">
+                AND A.DEPT_NM LIKE '%' || #{deptNm} || '%'
+            </if>
+        </trim>
+        ORDER BY A.ORD_NO
+    </select>
+</mapper>

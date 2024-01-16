@@ -1,0 +1,18 @@
+package kr.co.kwins.bookshop.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/book")
+public class BookController {
+
+	final String path = "book/";
+			
+	@Autowired
+	BookService service;
+	
+	@GetMapping("/list")
+}

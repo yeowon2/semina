@@ -1,0 +1,15 @@
+window.addEventListener("load", () => {
+    // get으로 보내니까 옵션을 주지 않아도 됨
+    fetch("/api")
+    .catch(reason => console.log)
+    .then(resp => {
+        if(resp.ok) {
+            resp.json()
+            .then(result => {
+                console.log(result);
+            });
+        }else {
+            console.log(result);
+        }
+    });
+});

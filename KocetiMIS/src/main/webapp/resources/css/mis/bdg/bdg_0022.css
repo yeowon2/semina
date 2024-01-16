@@ -1,0 +1,47 @@
+
+
+.body .search_container form {
+    display: flex;
+    margin : 1rem;
+
+}
+.body .search_container form .searchForm_align_right {
+    margin-left: 5rem;
+}
+.body .search_container form .div_gap{
+    margin-top : 1rem;
+}
+
+.body .search_container form label {
+    display: inline-block;
+    width: 60px;
+}
+
+.body .search_container form select {
+    width: 196px;
+}
+
+.body .grid_wrap {
+    display: flex;
+}
+.body .grid_wrap .grid{
+    width: 50%;
+}
+
+.body .grid_wrap .grid:nth-child(2), .resultRowCnt {
+    margin-left: 10px;
+}
+
+.body .grid_wrap .grid div{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.body .grid_wrap .grid .grid_subTitle {
+    margin-bottom: 1rem;
+}
+
+.body .grid_wrap .grid .grid_button_container {
+    gap:8px;
+}

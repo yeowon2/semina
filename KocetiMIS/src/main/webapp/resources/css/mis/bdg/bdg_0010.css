@@ -1,0 +1,51 @@
+.body .btn_container {
+    display: flex;
+    justify-content: right;
+}
+
+.body .btn_container button {
+    margin:5px;
+}
+
+.body .search_container form{
+    display: flex;
+    flex-direction: row;
+}
+
+.body .search_container form div {
+    margin: 1rem;
+}
+
+.body .search_container form div label{
+    display: inline-block;
+    width: 60px;
+}
+
+.body .search_container form div input{
+    width: 100px;
+}
+
+.body .grid_wrap {
+    display: flex;
+}
+
+
+.body .grid_wrap .grid{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+
+.body .grid_wrap #bdgDtlGrid .tui-grid-container{
+    margin-top: 42px;
+}
+
+.body .grid_wrap .grid .row_button_wrap {
+    display: flex;
+    justify-content: right;
+    /*margin: 10px;*/
+}
+
+.body .grid_wrap .grid .row_button_wrap button{
+    margin:5px;
+}

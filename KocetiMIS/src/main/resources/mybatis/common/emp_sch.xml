@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="empSch">
+
+    <select id="getDept" resultType="DeptTree">
+        SELECT A.DEPT_CD
+             ,B.DEPT_NM
+             ,A.UP_DEPT_CD
+             ,A.LEV
+             ,A.ORD_NO
+        FROM HRM_ORGCHT A
+                 INNER JOIN HRM_DEPT B ON A.DEPT_CD = B.DEPT_CD
+        WHERE A.USE_YN = 'Y'
+          AND B.USE_YN = 'Y'
+        ORDER BY A.ORD_NO
+    </select>
+
+    <select id="getEmp" resultType="Employee">
+        SELECT A.DEPT_CD
+             , C.DEPT_NM
+             , C.UP_DEPT_CD
+             , F.DEPT_NM                                                             AS     UP_DEPT_NM
+             , CASE WHEN A.EMP_NO = M.DEPT_EMP_NO THEN F.DEPT_EMP_NO ELSE M.DEPT_EMP_NO END UP_EMP_NO
+             , CASE
+                   WHEN A.EMP_NO = M.DEPT_EMP_NO THEN FN_GET_EMP_NM(F.DEPT_EMP_NO)
+                   ELSE FN_GET_EMP_NM(M.DEPT_EMP_NO) END                                    UP_EMP_NM
+             , C.DEPT_GRP_CD
+             , A.DEPT_ORG_CD
+             , C.POST_DEPT_CD
+             , H.DEPT_NM                                                             AS     POST_DEPT_NM
+             , B.GRD_CD
+             , D.COMM_NM                                                             AS     GRD_NM
+             , A.EMP_NO
+             , A.EMP_NM
+             , B.DUTY_DEG
+             , B.EMP_CLS
+             , B.HOLD_OFFI
+             , B.ENT_DT
+             , B.RSIGN_DT
+             , B.EMP_CLS
+             , FN_GET_COMM_NM(B.EMP_CLS)                                             AS     EMP_CLS_NM
+             , B.JOB_TP
+             , FN_GET_COMM_NM(B.JOB_TP)                                              AS     JOB_TP_NM
+             , B.JOB_POST
+             , L.COMM_NM                                                             AS     JOB_POST_NM
+             , B.ASSIN_CD
+             , FN_GET_COMM_NM(B.ASSIN_CD)                                            AS     ASSIN_NM
+             , B.SYNT_GRD_CD
+             , I.SYNT_GRD_NM
+             , B.BUSI_PLC_CD
+             , E.CORP_NM                                                             AS     BUSI_PLC_NM
+             , PKG_UTIL_ENDECODE.GET_ENCRYPT_DECODE(A.RES_NO, 'HRM_BAS_MGT.RES_NO')  AS     RES_NO
+             , A.EMAIL_ADDR
+             , G.OFFC_TEL_NO
+             , G.FAX_NO
+             , G.CELL_PON_NO
+             , G.HM_TEL_NO
+             , G.EMP_ENG_NM
+             , J.DPSIT_NM
+             , J.BK_CD
+             , FN_GET_BANK_NM(J.BK_CD)                                               AS     BK_NM
+             , PKG_UTIL_ENDECODE.GET_ENCRYPT_DECODE(J.ACC_NO, 'PAY_BANK_ACC.ACC_NO') AS     ACC_NO
+             , B.WRK_CLS
+             , A.SEX_DIST
+             , G.BIRTH
+             , A.SAL_STEP
+        FROM HRM_BAS_MGT A
+                 LEFT OUTER JOIN HRM_BAS_DTL B ON B.EMP_NO = A.EMP_NO
+                 LEFT OUTER JOIN HRM_ORGCHT C ON C.DEPT_CD = A.DEPT_CD AND C.USE_YN = 'Y'
+                 LEFT OUTER JOIN HRM_DEPT F ON F.DEPT_CD = C.UP_DEPT_CD
+                 LEFT OUTER JOIN COM_STD_MGT D ON D.COMM_CD = B.GRD_CD
+                 LEFT OUTER JOIN COM_CORP E ON E.CORP_CD = B.BUSI_PLC_CD
+                 LEFT OUTER JOIN HRM_PERSON G ON G.EMP_NO = A.EMP_NO
+                 LEFT OUTER JOIN HRM_DEPT H ON H.DEPT_CD = C.POST_DEPT_CD
+                 LEFT OUTER JOIN HRM_SYNT_GRD I ON I.SYNT_GRD_CD = B.SYNT_GRD_CD
+                 LEFT OUTER JOIN PAY_BANK_ACC J ON B.EMP_NO = J.EMP_NO AND B.DUTY_DEG = J.DUTY_DEG AND J.ACC_CLS = '530-010'
+                 LEFT OUTER JOIN COM_STD_MGT K ON K.COMM_CD = B.EMP_CLS
+                 LEFT OUTER JOIN COM_STD_MGT L ON L.COMM_CD = B.JOB_POST
+                 LEFT OUTER JOIN HRM_DEPT M ON M.DEPT_CD = A.DEPT_CD
+        WHERE A.EMP_NO NOT IN ('0000000', '0000001', 'subal1', 'subal2')
+
+        <if test = "empNo != null and empNo != '' ">
+            AND UPPER(A.EMP_NO) LIKE '%' || UPPER(#{empNo}) || '%'
+        </if>
+        <if test = "empNm != null and empNm != '' ">
+            AND TRIM(UPPER(A.EMP_NM)) LIKE '%' || TRIM(UPPER(#{empNm})) || '%'
+        </if>
+        <if test="deptCd != null and deptCd != '' " >
+            AND A.DEPT_CD LIKE #{deptCd} || '%'
+        </if>
+        <if test="deptNm != null and deptNm != '' " >
+            AND C.DEPT_NM LIKE '%' || #{deptNm} || '%'
+        </if>
+        <if test="empCls != null and empCls != '' " >
+            AND B.EMP_CLS LIKE #{empCls} || '%'
+        </if>
+        <if test="holdOffi != null and holdOffi != '' " >
+            AND B.HOLD_OFFI LIKE #{holdOffi} || '%'
+        </if>
+
+        ORDER BY C.ORD_NO
+               , L.ORD_NO
+               , D.ORD_NO
+               , A.EMP_NO
+    </select>
+</mapper>

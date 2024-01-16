@@ -1,0 +1,15 @@
+package kr.co.kwins.bookshop.service;
+
+import java.util.List;
+
+import kr.co.kwins.bookshop.model.Book;
+
+public class BookServiceImpl implements BookService {
+
+	@Override
+	public List<Book> list() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

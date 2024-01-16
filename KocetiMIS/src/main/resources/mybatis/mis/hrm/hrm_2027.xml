@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hrm_2027">
+
+    <select id = "findByList" resultType="Hrm_2027">
+        SELECT A.USER_ID AS USER_ID
+              ,A.DEPT_CD AS DEPT_CD
+              ,A.USE_DT AS USE_DT
+              ,A.JOB_CLS AS JOB_CLS
+              ,A.JOB_OBJ AS JOB_OBJ
+        FROM SYS_PGM_USE_INFO A
+        INNER JOIN HRM_BAS_DTL B
+            ON A.USER_ID = B.EMP_NO
+        WHERE PGM_ID = 'hrm_2010'
+        AND TO_DATE(TO_CHAR(USE_DT, 'YYYYMMDD'), 'YYYY-MM-DD') BETWEEN #{startDate} AND #{endDate}
+        AND USER_ID NOT IN ('0000000', '0000001', 'subal1', 'subal2')
+        <if test = "empCls != null and empCls != '' ">
+            AND B.EMP_CLS IN
+            <foreach collection="empCls" item = "empCls" open = "(" close = ")" separator = ",">
+                #{empCls}
+            </foreach>
+        </if>
+        ORDER BY USE_DT DESC, USER_ID
+    </select>
+</mapper>

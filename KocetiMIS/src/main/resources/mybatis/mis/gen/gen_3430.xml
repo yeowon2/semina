@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="gen_3430">
+
+
+    <select id="dorm_rqst_item" resultType="GenDormRqst">
+        SELECT A.RQST_NO,
+               A.RQST_DT,
+               B.DEPT_NM AS RQST_DEPT_NM,
+               C.COMM_NM AS RQST_GRD_NM,
+               DTL.GRD_CD as rqst_grd_cd,
+               D.EMAIL_ADDR,
+               A.RQST_DT,
+               A.RQST_EMP_NO,
+               D.EMP_NM AS RQST_EMP_NM,
+               E.DEPT_NM ,
+               A.EMP_CLS,
+               A.EMP_NO ,
+               F.EMP_NM ,
+               G.COMM_NM AS GRD_NM,
+               A.HOPE_DT,
+               A.SEX_DIST,
+               A.POST_NO,
+               A.ADDR,
+               A.ADDR_DTL,
+               A.CELL_PON_NO,
+               A.TEL_NO,
+               A.HOME_CLS,
+               A.CLS,
+               A.HRM_FRM_DT,
+               A.HRM_TO_DT,
+               NVL(A.PAY_YN,'N') AS PAY_YN,
+               A.FRM_DT,
+               A.TO_DT,
+               H.ROOM_NM,
+               I.APV_STAT_CD
+        FROM GEN_DORM_RQST A
+                 LEFT OUTER JOIN HRM_DEPT B
+                                 ON A.RQST_DEPT_CD = B.DEPT_CD
+                 LEFT OUTER JOIN  HRM_BAS_DTL DTL
+                                  ON A.RQST_EMP_NO=DTL.EMP_NO
+                 LEFT OUTER JOIN COM_STD_MGT C
+                                 ON DTL.GRD_CD =C.COMM_CD
+                 LEFT OUTER JOIN HRM_BAS_MGT D
+                                 ON A.RQST_EMP_NO=D.EMP_NO
+                 LEFT OUTER JOIN HRM_DEPT E
+                                 ON A.DEPT_CD=E.DEPT_CD
+                 LEFT OUTER JOIN HRM_BAS_MGT F
+                                 ON A.EMP_NO=F.EMP_NO
+                 LEFT OUTER JOIN HRM_BAS_DTL DTL2
+                                 ON A.EMP_NO=DTL2.EMP_NO
+                 LEFT OUTER JOIN COM_STD_MGT G
+                                 ON DTL2.GRD_CD=G.COMM_CD
+                 LEFT OUTER JOIN GEN_DORM H
+                                 ON A.ROOM_NO = H.ROOM_NO
+                 LEFT OUTER JOIN COM_RQST_NO I
+                                 ON A.RQST_NO = I.RQST_NO
+        WHERE A.RQST_NO=#{rqstNo}
+    </select>
+</mapper>

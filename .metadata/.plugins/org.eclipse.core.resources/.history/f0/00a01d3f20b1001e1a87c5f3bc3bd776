@@ -1,0 +1,173 @@
+window.addEventListener("load", () => {
+    // 모달 
+    const addModal = new bootstrap.Modal("#addModal");
+    const updateModal = new bootstrap.Modal("#updateModal");
+
+    // deleteHandler 시작
+    const deleteHandler = e => {
+        const bookid = e.target.closest("tr").dataset.bookid;
+
+        fetch("/api", {
+            method: "DELETE",
+            body: JSON.stringify({bookid}),
+            headers: {
+                "Content-Type" : "application/json"
+            }
+        }).then(resp => resp.json())
+        .then(result => {
+            console.log(result);
+        });
+    };
+
+    // updateModal 시작
+    const updateHandler = e => {
+        // 비구조화 (distructuring?)
+        const {bookid, bookname, publisher, price} = e.target.closest("tr").dataset;
+
+        document.querySelector("#updateModal input[name='bookid']").value = bookid;
+        document.querySelector("#updateModal input[name='bookname']").value = bookname;
+        document.querySelector("#updateModal input[name='publisher']").value = publisher;
+        document.querySelector("#updateModal input[name='price']").value = price;
+
+        updateModal.show();
+    };
+
+    // 서버에 전달해주는 update
+    document.querySelector("#updateModal .update").addEventListener("click", e => {
+
+        const item = {
+            bookid: document.querySelector("#updateModal input[name='bookid']").value,
+            bookname: document.querySelector("#updateModal input[name='bookname']").value,
+            publisher: document.querySelector("#updateModal input[name='publisher']").value,
+            price: document.querySelector("#updateModal input[name='price']").value,
+        }
+
+        fetch("/api", {
+            method: "PUT",
+            body: JSON.stringify(item),
+            headers: {
+                "Content-Type" : "application/json",
+            }
+        }).then(resp => resp.json())
+        .then(result => {
+            console.log(result);
+        });
+        updateModal.hide();
+    });
+
+    // addModal 시작
+    document.querySelector("#add").addEventListener("click", e => {
+        document.querySelector("#addModal input[name='bookname']").value = "";
+        document.querySelector("#addModal input[name='publisher']").value = "";
+        document.querySelector("#addModal input[name='price']").value = 0;
+
+        addModal.show(); // addModal.toggle(); 을 사용해도 됨
+    })
+
+    document.querySelector("#addModal .add").addEventListener("click", e => {
+        const item = {
+            // 버튼이 아니라면 target을 이용할 수 있음
+            bookname: document.querySelector("#addModal input[name='bookname']").value,
+            publisher: document.querySelector("#addModal input[name='publisher']").value,
+            price: document.querySelector("#addModal input[name='price']").value
+        };
+        console.log(item);
+
+        fetch("/api", {
+            method: "POST",
+            body: JSON.stringify(item),
+            headers: {
+                "Content-type" : "application/json"
+            }
+        }).then(resp => resp.json())
+        .then(result => {
+            console.log(result);
+        });
+
+        // hide를 적지 않아도 toggle을 달아주면 등록버튼을 눌렀을 때 모달창이 사라질거임
+        addModal.hide();
+    });
+
+    // list
+    // get으로 보내니까 옵션을 주지 않아도 됨
+    fetch("/api")
+    .catch(reason => console.log(reason))
+    .then(resp => {
+        if(resp.ok) {
+            resp.json()
+            .catch(reason => console.log(reason))
+            .then(result => {
+                console.log(result);
+
+                /*
+                // 2번째 방법
+                let html = '';
+                result.forEach(item => {
+                    html += `<tr>
+                                <td>${item.bookid}</td>
+                                <td>${item.bookname}</td>
+                                <td>${item.publisher}</td>
+                                <td>${item.price}</td>
+                                <td>
+                                    <a class="btn btn-danger" href="delete/${item.bookid}">삭제</a>
+                                    <a class="btn btn-warning" href="update/${item.bookid}">변경</a>
+                                </td>
+                            </tr>`;
+                });
+                document.querySelector("tbody").innerHTML = html;
+                */
+                
+                // 1번째 방법
+                result.forEach(item => {
+                    const tr = document.createElement("tr");
+                    tr.dataset.bookid = item.bookid;
+                    tr.dataset.bookname = item.bookname;
+                    tr.dataset.publisher = item.publisher;
+                    tr.dataset.price = item.price;
+
+                    const bookid = document.createElement("td");
+                    bookid.textContent = item.bookid;
+                    tr.append(bookid);
+
+                    const bookname = document.createElement("td");
+                    bookname.textContent = item.bookname;
+                    tr.append(bookname);
+
+                    const publisher = document.createElement("td");
+                    publisher.textContent = item.publisher;
+                    tr.append(publisher);
+
+                    const price = document.createElement("td");
+                    price.textContent = item.price;
+                    tr.append(price);
+
+                    const management = document.createElement("td");
+
+                    const remove = document.createElement("a");
+                    remove.textContent = "삭제";
+                    remove.classList.add("btn", "btn-sm", "btn-danger");
+                    management.append(remove);
+
+                    const update = document.createElement("a");
+                    update.textContent = "수정";
+                    update.classList.add("btn", "btn-sm", "btn-warning");
+                    // 모달 이벤트 핸들러
+                    update.addEventListener("click", updateHandler);
+
+                    management.append(update);
+                    tr.append(management);
+
+                    document.querySelector("tbody").append(tr);
+                });
+            });
+        }else {
+            console.log(resp);
+        }
+    });
+
+    /*fetch("/api")
+    .then(resp => resp.json())
+    .then(result => {
+        console.log(result);
+    });*/
+});

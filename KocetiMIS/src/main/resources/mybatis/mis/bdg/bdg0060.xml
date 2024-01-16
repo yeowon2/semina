@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="bdg0060">
+
+    <select id="findByExpnCstList" resultType="BdgExpnCstCd">
+        SELECT A.EXPN_CST_CD AS EXPN_CST_CD
+              ,A.EXPN_CST_NM AS EXPN_CST_NM
+              ,A.EXPN_CST_ENG_NM AS EXPN_CST_ENG_NM
+              ,A.BUSI_PLC_CD AS BUSI_PLC_CD
+              ,A.USE_YN AS USE_YN
+              ,A.RMK AS RMK
+        FROM BDG_EXPN_CST_CD A
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test='busiPlcCd != null and busiPlcCd != undefined and busiPlcCd != "" '>
+                AND A.BUSI_PLC_CD = #{busiPlcCd}
+            </if>
+            <if test='cstDiv != null and cstDiv != undefined and cstDiv != "" '>
+                AND A.CST_DIV = #{cstDiv}
+            </if>
+            <if test='expnCstNm != null and expnCstNm != undefined and expnCstNm != "" '>
+                AND REPLACE(A.EXPN_CST_NM, ' ', '') LIKE '%' || REPLACE(#{expnCstNm}, ' ', '') || '%'
+            </if>
+            <if test='useYn != null and useYn != undefined and useYn != "" '>
+                AND A.USE_YN = #{useYn}
+            </if>
+        </trim>
+        ORDER BY A.EXPN_CST_CD
+    </select>
+</mapper>

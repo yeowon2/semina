@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>add</title>
+</head>
+<body>
+	<div>
+		<div>
+			<h1>도서 등록</h1>
+		</div>
+		<div>
+			<form method="post">
+				<div>
+					<label>도서명 : </label>
+					<div>
+						<input type="text" name="bookname">
+					</div>
+				</div>
+				<div>
+					<label>출판사 : </label>
+					<div>
+						<input type="text" name="publisher">
+					</div>
+				</div>
+				<div>
+					<label>가격 : </label>
+					<div>
+						<input type="number" name="price">
+					</div>
+				</div>
+				<div>
+					<button>등록</button>
+					<a href="list">목록</a>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

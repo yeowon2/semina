@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/include.html :: head">
+	<meta charset="UTF-8">
+	<title>Bookshop 2024</title>
+	<link href="/css/bootstrap.min.css" rel="stylesheet" />
+	<script src = "/js/bootstrap.min.js"></script>
+	<script src="/book/list.js"></script>
+</head>
+<body>
+<div class="container">
+	<div>
+		<div th:replace="/include.html :: nav"></div>
+	</div>
+    <div>
+        <h1>도서 목록</h1>
+    </div>
+    <div class="mb-2">
+		<form>
+			<div class="row">
+				<div class="col-5"></div>
+				<div class="col-2">
+					<select name="search" class="form-select form-select-sm">
+						<option value="0">선택</option>
+						<option value="1">도서번호</option>
+						<option value="2">도서명</option>
+						<option value="3">출판사</option>
+					</select>
+				</div>
+				<div class="col-4">
+					<input name="keyword" type="text" class="form-control form-control-sm">
+				</div>
+				<div class="col d-grid">
+					<button class="btn btn-outline-primary btn-sm">검색</button>
+				</div>
+			</div>
+		</form>
+	</div>
+    <div>
+        <table border="1" class="table table-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>도서번호</th>
+                    <th>도서명</th>
+                    <th>출판사</th>
+                    <th>가격</th>
+                    <th>관리</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${list.size() < 1}">
+                    <td colspan="5">검색된 도서가 없습니다.</td>
+                </tr>
+              <!--  <tr th:each="item : ${list}">
+                    <td th:text= "${item.bookid}"></td>
+                    <td th:text= "${item.bookname}"></td>
+                    <td th:text= "${item.publisher}"></td>
+                    <td th:text= "${item.price}"></td>
+                    <td>
+                        <a class="btn btn-danger" th:href="@{|delete/${item.bookid}|}" href="delete">삭제</a>
+                        <a class="btn btn-warning" th:href="@{|update/${item.bookid}|}" href="update">변경</a>
+                    </td>
+                </tr>-->
+            </tbody>
+            <tfoot>
+				<tr>
+					<td colspan="5">
+						<div class="pagination justify-content-center">
+							<span class="page-item"><a class="page-link" href="#" th:href="@{|?page=1&${pager.query}|}">처음</a></span>
+							<span class="page-item"><a class="page-link" href="#" th:href="@{|?page=${pager.prev}&${pager.query}|}">이전</a></span>
+							<span th:each=" item : ${pager.list}" th:class="|page-item ${item == pager.page ? 'active' : ''}|">
+								<a class="page-link" href="#" th:href="@{|?page=${item}|}" th:text="${item}"></a>
+							</span>
+							<span class="page-item"><a class="page-link" href="#" th:href="@{|?page=${pager.next}&${pager.query}|}">다음</a></span>
+							<span class="page-item"><a class="page-link" href="#" th:href="@{|?page=${pager.last}&${pager.query}|}">마지막</a></span>
+						</div>
+					</td>
+				</tr>
+			</tfoot>
+        </table>
+    </div>
+    <div>
+       <span>
+            <a id="add" class="btn btn-success" href="#">등록 </a>
+        </span>
+        <span>
+            <a class="btn btn-dark" href="..">이전</a>
+        </span>
+    </div>
+</div>
+
+<!-- Add Modal Start -->
+<div class="modal fade" id="addModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">도서 등록</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <!-- 여기서 aria : 웹 접근성에 대한 속성들 (장애가 있으신 분들을 위해서 달아놓는 것 - ex_. screenreader를 통해 화면 읽기) -->
+      </div>
+      <div class="modal-body">
+        <div class="row form-group">
+			<label class="col-2">도서명 : </label>
+			<div class="col">
+				<input type="text" name="bookname" class="form-control">
+			</div>
+		</div>
+		<div class="row form-group">
+			<label class="col-2">출판사 : </label>
+			<div class="col">
+				<input type="text" name="publisher" class="form-control">
+			</div>
+		</div>
+		<div class="row form-group">
+			<label class="col-2">가격 : </label>
+			<div class="col">
+				<input type="number" name="price" class="form-control">
+			</div>
+		</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">닫기</button>
+        <button type="button" class="btn btn-success add" >등록</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Add Modal End -->
+
+<!-- Update Modal Start -->
+<div class="modal fade" id="updateModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">도서 정보 변경</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <!-- 여기서 aria : 웹 접근성에 대한 속성들 (장애가 있으신 분들을 위해서 달아놓는 것 - ex_. screenreader를 통해 화면 읽기) -->
+      </div>
+      <div class="modal-body">
+		<div class="row form-group">
+			<label class="col-2">도서번호 : </label>
+			<div class="col">
+				<input type="number" name="bookid" class="form-control" readonly>
+			</div>
+		</div>
+        <div class="row form-group">
+			<label class="col-2">도서명 : </label>
+			<div class="col">
+				<input type="text" name="bookname" class="form-control">
+			</div>
+		</div>
+		<div class="row form-group">
+			<label class="col-2">출판사 : </label>
+			<div class="col">
+				<input type="text" name="publisher" class="form-control">
+			</div>
+		</div>
+		<div class="row form-group">
+			<label class="col-2">가격 : </label>
+			<div class="col">
+				<input type="number" name="price" class="form-control">
+			</div>
+		</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">닫기</button>
+        <button type="button" class="btn btn-warning update" >변경</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Update Modal End -->
+</body>
+</html>

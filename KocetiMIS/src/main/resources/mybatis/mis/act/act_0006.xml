@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="act_0006">
+
+    <select id="act_mgmt_list" resultType="ActMgmt">
+        SELECT MGT_ITM_CD,
+               MGT_ITM_NM,
+               DATA_TP,
+               REFER_TB,
+               REFER_FLD,
+               REFER_FLD_NM,
+               FLD_SIZE
+        FROM ACT_MGMT
+        WHERE MGT_ITM_NM LIKE '%' || UPPER(#{mgtItmNm}) || '%'
+          AND MGT_ITM_CD LIKE '%' || UPPER(#{mgtItmCd}) || '%'
+        ORDER BY TO_NUMBER(MGT_ITM_CD)
+    </select>
+
+</mapper>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="act_0005">
+
+    <select id="act_bank_acct_list" resultType="ActBankAcct">
+        select A.BK_CD
+             , B.BK_NM
+             , A.BK_ACC_NO
+             , A.BRNC_OFFC
+             , A.DPSIT_NM
+             , A.ACCT_CD
+             , A.DPSIT_USE
+             , A.DPSIT_TP
+             , A.OPEN_DT
+             , A.TERM_DT
+             , A.RATE
+             , A.OPRT_CLS
+             , A.OPRT_PPS
+             , A.USE_YN
+             , A.RMK
+        from ACT_BANK_ACT A
+                 JOIN ACT_BANK B
+                      ON A.BK_CD = B.BK_CD
+        WHERE A.USE_YN LIKE '%' || #{useYn} || '%'
+          AND A.BUSI_PLC_CD LIKE '%' || #{busiPlcCd} || '%'
+          AND A.BK_ACC_NO LIKE '%' || #{bkAccNo} || '%'
+
+    </select>
+
+</mapper>

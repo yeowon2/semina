@@ -1,0 +1,74 @@
+.body .btn_container {
+    display: flex;
+    justify-content: right;
+}
+
+.body .btn_container button {
+    margin: 5px;
+}
+
+.body .search_container form {
+    display: flex;
+    flex-direction: row;
+    margin: 1rem;
+}
+
+.body .search_container form div{
+    margin-left: 3rem;
+}
+
+.body .search_container form label {
+   display: inline-block;
+   width: 60px;
+}
+
+.body .search_container form .use_yn input, span{
+    vertical-align: middle;
+    margin-left: 5px;
+}
+
+.body .data_wrap {
+    display: flex;
+}
+
+.body .data_wrap .grid_wrap, .dtl_wrap {
+    margin-left: 3rem;
+    width: 50%;
+}
+.body .data_wrap .grid_text {
+    margin-bottom: 1rem;
+    display: flex;
+    vertical-align: bottom;
+    line-height: 23px;
+}
+.body .data_wrap .resultRowCnt p{
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 10px;
+}
+
+.body .data_wrap .dtl_wrap div {
+    margin : 1rem;
+}
+
+.body .data_wrap .dtl_wrap div label {
+    display: inline-block;
+    vertical-align: top;
+    width: 60px;
+}
+
+.body .dtl_wrap form .use_yn input, span{
+    vertical-align: middle;
+    margin-left: 5px;
+}
+
+.body .data_wrap .dtl_wrap select {
+    width: 196px;
+}
+
+.body .dtl_wrap form textarea {
+    width: 196px;
+    height: 150px;
+}
+
+

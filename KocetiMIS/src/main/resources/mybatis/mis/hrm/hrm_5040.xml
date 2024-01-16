@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hrm_5040">
+
+    <resultMap id="eduRqstList" type = "hrmEduRqst" autoMapping = "true">
+        <id property="eduRqstNo" column = "EDU_RQST_NO"/>
+
+        <association property = "comRqstNo" javaType = "comRqstNo" autoMapping = "false">
+            <id property = "rqstNo" column = "RQST_NO"/>
+            <result property = "gwDocNo" column = "GW_DOC_NO"/>
+            <result property = "apvStatCd" column = "APV_STAT_CD"/>
+            <result property = "apvStatNm" column = "APV_STAT_NM"/>
+        </association>
+
+        <association property = "hrmEduRecpt" javaType = "hrmEduRecpt">
+            <id property = "eduRqstNo" column = "EDU_RQST_NO"/>
+            <result property = "empNo" column = "EMP_NO"/>
+            <result property = "empNm" column = "EMP_NM"/>
+            <result property = "eduFrmDt" column = "EDU_FRM_DT"/>
+            <result property = "eduToDt" column = "EDU_TO_DT"/>
+            <result property = "eduCrsNm" column = "EDU_CRS_NM"/>
+            <result property = "eduTime" column = "EDU_TIME"/>
+            <result property = "eduAmt" column = "EDU_AMT"/>
+            <result property = "eduOrgNm" column = "EDU_ORG_NM"/>
+            <result property = "rtnYn" column = "RTN_YN"/>
+            <result property = "rtnAmt" column = "RTN_AMT"/>
+        </association>
+    </resultMap>
+
+    <select id = "findByList" parameterType="HashMap" resultMap="eduRqstList">
+        SELECT CMP_YN AS CMP_YN
+              ,CMP_NM AS CMP_NM
+              ,EDU_RQST_NO AS EDU_RQST_NO
+              ,RQST_CLS AS RQST_CLS
+              ,RQST_DT AS RQST_DT
+              ,EDU_CRS_NM AS EDU_CRS_NM
+              ,EDU_TIME AS EDU_TIME
+              ,EDU_AMT AS EDU_AMT
+              ,EDU_ORG_NM AS EDU_ORG_NM
+              ,EDU_FRM_DT AS EDU_FRM_DT
+              ,EDU_TO_DT AS EDU_TO_DT
+              ,EDU_FRM_TIME AS EDU_FRM_TIME
+              ,EDU_TO_TIME AS EDU_TO_TIME
+              ,RTN_YN AS RTN_YN
+              ,RTN_AMT AS RTN_AMT
+              ,APV_STAT_CD AS APV_STAT_CD
+              ,FN_GET_COMM_NM(APV_STAT_CD) AS APV_STAT_NM
+              ,GW_DOC_NO AS GW_DOC_NO
+              ,CMP_TM AS CMP_TM
+              ,LISTAGG(EMP_NO,',') WITHIN GROUP (ORDER BY EMP_NO) AS EMP_NO
+              ,LISTAGG(FN_GET_EMP_NM(EMP_NO),',') WITHIN GROUP (ORDER BY EMP_NO) AS EMP_NM
+              ,LISTAGG(FN_GET_DEPT_NM(EDU_DEPT_CD),',') WITHIN GROUP (ORDER BY EMP_NO) AS EDU_DEPT_NM
+              ,LISTAGG(EDU_DEPT_CD,',') WITHIN GROUP (ORDER BY EMP_NO) AS EDU_DEPT_CD
+              ,FN_GET_EMP_NM(RQST_EMP_NO) AS RQST_EMP_NM
+              ,FN_GET_DEPT_NM(RQST_DEPT_CD) AS RQST_DEPT_NM
+              ,RQST_DEPT_CD AS RQST_DEPT_CD
+              ,RQST_EMP_NO AS RQST_EMP_NO
+        FROM
+        (
+            SELECT NVL(A.CMP_YN, 'N') AS CMP_YN
+                  ,CASE
+                      WHEN NVL(A.CMP_YN,'N') = 'Y' THEN '일괄교육'
+                      ELSE '개인교육'
+                   END AS CMP_NM
+                  ,A.EDU_RQST_NO AS EDU_RQST_NO
+                  ,CASE
+                      WHEN NVL(A.RQST_CLS, 1) = 1 THEN '신청'
+                      ELSE '취소'
+                   END AS RQST_CLS
+                  ,A.RQST_DT AS RQST_DT
+                  ,C.EDU_DEPT_CD AS EDU_DEPT_CD
+                  ,FN_GET_DEPT_NM(C.EDU_DEPT_CD) AS EDU_DEPT_NM
+                  ,C.EMP_NO AS EMP_NO
+                  ,FN_GET_EMP_NM(C.EMP_NO) AS EMP_NM
+                  ,A.RQST_EMP_NO AS RQST_EMP_NO
+                  ,FN_GET_EMP_NM(A.RQST_EMP_NO) AS RQST_EMP_NM
+                  ,A.RQST_DEPT_CD AS RQST_DEPT_CD
+                  ,FN_GET_DEPT_NM(A.RQST_DEPT_CD) AS RQST_DEPT_NM
+                  ,C.EDU_CRS_NM AS EDU_CRS_NM
+                  ,C.EDU_AMT AS EDU_AMT
+                  ,C.EDU_ORG_NM AS EDU_ORG_NM
+                  ,C.EDU_FRM_DT AS EDU_FRM_DT
+                  ,C.EDU_TO_DT AS EDU_TO_DT
+                  ,C.EDU_FRM_TIME AS EDU_FRM_TIME
+                  ,C.EDU_TO_TIME AS EDU_TO_TIME
+                  ,C.RTN_AMT AS RTN_AMT
+                  ,B.APV_STAT_CD AS APV_STAT_CD
+                  ,B.GW_DOC_NO AS GW_DOC_NO
+                  ,C.CMP_TM AS CMP_TM
+                  ,FN_GET_COMM_NM(C.EDU_SYNT_GRD_CD) AS EDU_GRD_NM
+                  ,NVL(C.RTN_YN, 'N') AS RTN_YN
+                  ,D.EDU_TIME AS EDU_TIME
+            FROM HRM_EDU_RQST A
+            INNER JOIN COM_RQST_NO B
+                ON A.EDU_RQST_NO = B.RQST_NO
+            INNER JOIN HRM_EDU_RECPT C
+                ON A.EDU_RQST_NO = C.EDU_RQST_NO
+            LEFT OUTER JOIN
+            (
+                SELECT SUM(EDU_TIME) AS EDU_TIME
+                      ,B.EDU_RQST_NO AS EDU_RQST_NO
+                FROM HRM_EDU_RECPT B
+                GROUP BY B.EDU_RQST_NO
+            ) D
+                ON A.EDU_RQST_NO = D.EDU_RQST_NO
+            WHERE A.RQST_DT BETWEEN TO_CHAR(TO_DATE(#{rqstSdt}),'YYYYMMDD') AND TO_CHAR(TO_DATE(#{rqstEdt}), 'YYYYMMDD')
+            <if test="eduRqstSdt != null and eduRqstSdt != '' ">
+                AND SUBSTR(EDU_FRM_DT, 1,6) <![CDATA[>=]]> TO_CHAR(TO_DATE(#{eduRqstSdt}, 'YYYY-MM'), 'YYYYMM')
+            </if>
+            <if test="eduRqstEdt != null and eduRqstEdt != '' ">
+                AND SUBSTR(EDU_FRM_DT, 1,6) <![CDATA[<=]]> TO_CHAR(TO_DATE(#{eduRqstEdt}, 'YYYY-MM'), 'YYYYMM')
+            </if>
+            <if test="rqstEmpNo != null and rqstEmpNo != '' ">
+                AND (C.EMP_NO = #{rqstEmpNo} or A.RQST_EMP_NO = #{rqstEmpNo})
+            </if>
+            <if test="rqstDeptCd != null and rqstDeptCd != '' ">
+                AND A.RQST_DEPT_CD IN
+                (
+                    SELECT DEPT_CD
+                    FROM HRM_DEPT
+                    WHERE DEPT_GRP_CD = FN_GET_DEPT_GRP(#{rqstDeptCd})
+                )
+            </if>
+            <if test="apvStatCd != null and apvStatCd != '' ">
+                AND B.APV_STAT_CD = #{apvStatCd}
+            </if>
+            <if test="cmpYn != null and cmpYn != '' ">
+                AND NVL(A.CMP_YN, 'N') = #{cmpYn}
+            </if>
+        )
+        GROUP BY CMP_YN
+                ,CMP_NM
+                ,EDU_RQST_NO
+                ,RQST_CLS
+                ,RQST_DT
+                ,RQST_EMP_NO
+                ,RQST_DEPT_CD
+                ,EDU_CRS_NM
+                ,EDU_TIME
+                ,EDU_AMT
+                ,EDU_ORG_NM
+                ,EDU_FRM_DT
+                ,EDU_TO_DT
+                ,EDU_FRM_TIME
+                ,EDU_TO_TIME
+                ,RTN_YN
+                ,RTN_AMT
+                ,APV_STAT_CD
+                ,GW_DOC_NO
+                ,CMP_TM
+        ORDER BY EDU_RQST_NO DESC, EDU_FRM_DT DESC
+    </select>
+</mapper>

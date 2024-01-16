@@ -1,0 +1,19 @@
+package kr.co.kwins.bookshop.service;
+
+import java.util.List;
+
+import kr.co.kwins.bookshop.model.Book;
+
+public interface BookService {
+
+	List<Book> list();
+
+	void add(Book item);
+
+	void delete(Long bookid);
+
+	Book item(Long bookid);
+
+	void update(Book item);
+
+}

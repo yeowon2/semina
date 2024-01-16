@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hrm_1035">
+
+    <select id = "findByApntCd" resultType="Hrm_1035">
+        SELECT APPNT_CD AS APPNT_CD
+              ,APPNT_NM AS APPNT_NM
+        FROM HRM_APPNT_CD
+        WHERE APPNT_CLS = '125-010'
+        ORDER BY APPNT_CD
+    </select>
+
+    <select id = "findByList" resultType = "Hrm_1035">
+        SELECT A.EMP_NO AS EMP_NO
+              ,A.DUTY_DEG AS DUTY_DEG
+              ,A.EMP_NO AS EMP_NO
+              ,A.APPNT_DT AS APPNT_DT
+              ,B.APPNT_CD AS APPNT_CD
+              ,B.APPNT_NM AS APPNT_NM
+              ,C.APPNT_NM AS APPNT_DTL_NM
+              ,CASE
+                 WHEN A.NO_PAID_YN = 'Y' THEN '무급'
+                 ELSE '유급'
+               END AS NO_PAID_NM
+              ,F.DEPT_NM AS UP_DEPT_NM
+              ,D.DEPT_NM AS DEPT_NM
+              ,FN_GET_COMM_NM(A.EMP_CLS) AS EMP_CLS_NM
+              ,FN_GET_COMM_NM(A.JOB_TP) AS JOB_NM
+              ,FN_GET_COMM_NM(A.GRD_CD) AS GRD_NM
+              ,FN_GET_COMM_NM(A.JOB_POST) AS JOB_POST_NM
+              ,FN_GET_COMM_NM(A.ASSIN_CD) AS ASSIN_NM
+              ,DECODE(A.TIME_CLS, 'F', '상근', 'P', '비상근', '') AS TIME_CLS_NM
+              ,DECODE(A.PRSN_CLS, 'R', '연구', 'A', '지원', '') AS PRSN_CLS_NM
+              ,DECODE(A.WRK_CLS, 'R', '연구', 'A', '행정', '') AS WRK_CLS_NM
+              ,DECODE(A.RGLR_YN, 'Y', '상시', 'N', '비상시', '') AS RGLR_YN_NM
+              ,E.SYNT_GRD_NM AS SYNT_GRD_NM
+              ,FN_GET_COMM_NM(A.SAL_STEP) AS SAL_STEP
+              ,A.HRM_GRD AS HRM_GRD
+              ,A.PAY_GRD AS PAY_GRD
+              ,A.TECH_GRD AS TECH_GRD
+              ,NVL(A.APPNT_TO_DT, '') AS APPNT_TO_DT
+              ,A.RMK AS RMK
+              ,G.ENT_DT AS ENT_DT
+              ,G.EMP_NM AS EMP_NM
+              ,G.CUR_DEPT_NM AS CUR_DEPT_NM
+              ,G.CUR_SYNT_GRD_CD AS CUR_SYNT_GRD_CD
+              ,B.APPNT_CLS AS APPNT_CLS
+        FROM HRM_APPNT A
+        INNER JOIN HRM_APPNT_CD B
+            ON A.APPNT_CD = B.APPNT_CD
+            AND B.APPNT_CLS = '125-010'
+        INNER JOIN HRM_APPNT_CD C
+            ON A.APPNT_DTL_CD = C.APPNT_CD
+        LEFT OUTER JOIN HRM_DEPT D
+            ON A.DEPT_CD = D.DEPT_CD
+        LEFT OUTER JOIN HRM_SYNT_GRD E
+            ON A.SYNT_GRD_CD = E.SYNT_GRD_CD
+        LEFT OUTER JOIN HRM_DEPT F
+            ON A.UP_DEPT_CD = F.DEPT_CD
+        INNER JOIN
+        (
+            SELECT A.EMP_NO AS EMP_NO
+                  ,A.EMP_NM AS EMP_NM
+                  ,C.DEPT_NM AS CUR_DEPT_NM
+                  ,D.SYNT_GRD_CD AS CUR_SYNT_GRD_CD
+                  ,B.ENT_DT AS ENT_DT
+                  ,C.ORD_NO AS ORD_NO
+                  ,B.EMP_CLS AS EMP_CLS
+                  ,B.JOB_POST AS JOB_POST
+            FROM HRM_BAS_MGT A
+            INNER JOIN HRM_BAS_DTL B
+                ON A.EMP_NO = B.EMP_NO
+            LEFT OUTER JOIN HRM_DEPT C
+                ON A.DEPT_CD = C.DEPT_CD
+            LEFT OUTER JOIN HRM_SYNT_GRD D
+                ON B.SYNT_GRD_CD = D.SYNT_GRD_CD
+        ) G
+            ON A.EMP_NO = G.EMP_NO
+        WHERE A.DUP_APPNT_YN = 'N'
+        AND	A.EMP_NO NOT IN('0000000','0000001','subal1','subal2')
+        <if test = "empNo != null and empNo != '' ">
+            AND A.EMP_NO = #{empNo}
+        </if>
+        <if test = "contEndYY != null and contEndYY != '' ">
+            AND NVL(SUBSTR(A.APPNT_TO_DT, 1,4), '9999') = #{contEndYY}
+        </if>
+        <if test = "contStartDate != null and contStartDate != '' ">
+        AND NVL(A.APPNT_TO_DT, '19000101') <![CDATA[>=]]> TO_CHAR(TO_DATE(#{contStartDate}), 'YYYYMMDD')
+    </if>
+        <if test = "contEndDate != null and contEndDate != '' ">
+            AND NVL(A.APPNT_TO_DT, '99991231') <![CDATA[<=]]> TO_CHAR(TO_DATE(#{contEndDate}), 'YYYYMMDD')
+        </if>
+        <if test = "appntCls != null and appntCls != '' ">
+            AND B.APPNT_CD IN
+            <foreach collection = "appntCls" item = "appntCls" open = "(" close = ")" separator = ",">
+                #{appntCls}
+            </foreach>
+        </if>
+        ORDER BY G.ORD_NO, G.EMP_CLS, G.CUR_SYNT_GRD_CD, A.EMP_NO, G.EMP_NM, A.APPNT_DT
+    </select>
+</mapper>

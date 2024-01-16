@@ -1,0 +1,77 @@
+
+.btn_container {
+    display: flex;
+    justify-content: right;
+    margin-bottom: 10px;
+}
+
+.main_container {
+    display: flex;
+    flex-direction: column;
+    gap:15px;
+}
+
+.main_container .main_header_wrap {
+    display: flex;
+}
+
+.main_container .main_middle_wrap {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.main_middle_wrap textarea {
+    height: 5rem;
+    resize: none;
+}
+
+.main_container .input_wrap {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    margin-bottom : 10px;
+}
+
+.main_container .input_wrap > label {
+    width: 80px;
+    text-align: left;
+}
+
+
+.main_container .sub_title {
+    font-size: 1.15rem;
+    color: var(--primary-color);
+}
+
+.main_container .input_wrap span {
+    padding : 0 5px 0 5px;
+}
+
+.main_container .input_margin input{
+    width:18%;
+    padding:0;
+}
+
+.main_container .input_wrap_emp input:nth-last-child(1)
+ ,.main_container .input_wrap_radio input:nth-last-child(1){
+    margin-left: 5px;
+}
+
+.main_container .input_width25{
+    width: 25%;
+}
+.main_container .input_width50{
+    width: 50%
+}
+
+.main_container .input_width80{
+    width:80%;
+}
+
+.main_container .input_width90{
+    width:90%;
+}
+
+.input_width100 {
+    width: 100%;
+}

@@ -1,0 +1,17 @@
+#hrm5040SearchForm {
+  margin-bottom: 20px;
+}
+#hrm5040SearchForm .top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+#hrm5040SearchForm .top .btn_container {
+  display: flex;
+  gap: 8px;
+  justify-content: end;
+  align-items: center;
+}
+
+/*# sourceMappingURL=hrm_5040.css.map */

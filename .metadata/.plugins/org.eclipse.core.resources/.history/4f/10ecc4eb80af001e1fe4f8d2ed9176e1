@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.kwins.bookshop.dao.BookDao">
+
+	<select id="total">
+		SELECT COUNT(*) FROM BOOK
+	</select>
+
+	<select id="list">
+		SELECT * 
+		FROM (
+		  SELECT sub.*, ROWNUM rnum 
+		  FROM (SELECT * FROM BOOK) sub)
+		WHERE rnum BETWEEN ((#{page} - 1)* #{perPage} + 1) AND (#{page} * #{perPage})
+	</select>
+	
+	<select id="item">
+		SELECT * FROM BOOK WHERE BOOKID = #{bookid}
+	</select>
+	
+	<insert id="add">
+		INSERT INTO BOOK
+		VALUES (BOOK_SEQ.nextval, #{bookname}, #{publisher}, #{price})
+	</insert>
+	
+	<update id="update">
+		UPDATE BOOK
+		SET BOOKNAME = #{bookname}, PUBLISHER = #{publisher}, PRICE = #{price}
+		WHERE BOOKID = #{bookid}
+	</update>
+	
+	<delete id="delete">
+		DELETE FROM BOOK WHERE BOOKID = #{bookid}
+	</delete>
+</mapper>

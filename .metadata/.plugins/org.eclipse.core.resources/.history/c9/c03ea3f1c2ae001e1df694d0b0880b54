@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.kwins.bookshop.dao.BookDao">
+	<select id="list">
+		SELECT * FROM BOOK
+	</select>
+	
+	<select id="item" resultType="Book">
+		SELECT * FROM BOOK WHERE BOOKID = #{bookid}
+	</select>
+	
+	<insert id="add">
+		INSERT INTO BOOK
+		VALUES (#{bookid}, #{bookname}, #{publisher}, #{price})
+	</insert>
+	
+	<update id="update">
+		UPDATE BOOK
+		SET BOOKNAME = #{bookname}, PUBLISHER = #{publisher}, PRICE = #{price}
+		WHERE BOOKID = #{bookid}
+	</update>
+	
+	<delete id="delete">
+		DELETE FROM BOOK WHERE BOOKID = #{bookid}
+	</delete>
+</mapper>

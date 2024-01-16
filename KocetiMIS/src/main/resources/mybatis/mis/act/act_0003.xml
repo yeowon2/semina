@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="act_0003">
+
+    <select id="act_fs_list" resultType="ActFsMstTree">
+        SELECT  SEQ,
+                DIS_NM ,
+                ORDERING,
+                LEV,
+                UP_CD,
+                CN_SEQ ,
+                FINC_STAT_YY,
+                FINC_STAT_CD
+        FROM  ACT_FS_MST
+        WHERE  FINC_STAT_CD = #{fincStatCd}
+          AND  FINC_STAT_YY = #{fincStatYy}
+        ORDER BY ORDERING
+    </select>
+    <select id="act_fsDtl_list" resultType="ActFsDtl">
+        SELECT A.ACCT_CLS,
+               A.ACCT_CD,
+               B.ACCT_NM
+        FROM ACT_FS_DTL A
+                 JOIN ACT_ACCT_CD B
+                      ON A.ACCT_CD = B.ACCT_CD
+        WHERE A.FINC_STAT_YY = #{fincStatYy}
+          AND A.SEQ = #{seq}
+          AND A.FINC_STAT_CD = #{fincStatCd}
+    </select>
+</mapper>

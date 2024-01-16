@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="gen_3410">
+
+    <select id="dorm_list" resultType="GenDorm">
+        SELECT	 HOUSE_NO
+             ,ROOM_NO
+             ,ROOM_NO_SEQ
+             ,CLS
+             ,HOME_CLS
+             ,FLOOR
+             ,ROOM_CLS
+             ,SEX_DIST
+             ,USE_FEE
+             ,USE_FEE_DAY
+             ,CNCIL_FEE
+             ,USE_YN
+             ,RMK
+        FROM GEN_DORM
+        <if test="homeCls!=null or cls!=null or roomCls!=null or useYn!=null or houseNo!=null or roomNo!=null or sexDist!=null ">
+            WHERE HOME_CLS LIKE #{homeCls}  || '%'
+            AND CLS LIKE #{cls}||'%'
+            AND ROOM_CLS LIKE #{roomCls}||'%'
+            AND USE_YN LIKE #{useYn}||'%'
+            AND HOUSE_NO LIKE #{houseNo}||'%'
+            AND ROOM_NO LIKE #{roomNo}||'%'
+            AND SEX_DIST LIKE #{sexDist}||'%'
+        </if>
+
+        ORDER BY HOUSE_NO ,ROOM_NO
+    </select>
+</mapper>

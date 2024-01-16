@@ -1,0 +1,5 @@
+package kr.co.kwins.hello.model;
+
+public class Book {
+
+}

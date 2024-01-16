@@ -1,0 +1,5 @@
+package kr.co.kwins.bookshop.controller;
+
+public class ApiController {
+
+}

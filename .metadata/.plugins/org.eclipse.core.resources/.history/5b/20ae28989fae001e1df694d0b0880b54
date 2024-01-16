@@ -1,0 +1,5 @@
+package kr.co.kwins.bookshop.dao;
+
+public interface BookDao {
+
+}

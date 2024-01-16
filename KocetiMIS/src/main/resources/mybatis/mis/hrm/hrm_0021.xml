@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hrm_0021">
+    <select id="searchStruct" resultType="HrmDeptStruct">
+        SELECT STRUCT_DT
+             , CUR_YN
+             , RMK
+        FROM HRM_DEPT_STRUCT
+        ORDER BY STRUCT_DT DESC
+    </select>
+
+    <select id="searchReorganDept" resultType="DeptReorganRecord">
+        SELECT (SELECT MAX(STRUCT_DT)
+                FROM HRM_DEPT_STRUCT
+                WHERE STRUCT_DT &lt; #{structDt}) AS PREV_STRUCT_DT
+             , A.STRUCT_DT                        AS CUR_STRUCT_DT
+             , A.SEQ
+             , A.CHG_CLS_CD
+             , FN_GET_COMM_NM(A.CHG_CLS_CD)       AS CHG_CLS_NM
+             , A.PREV_DEPT_CD
+             , B.DEPT_NM                          AS PREV_DEPT_NM
+             , A.CUR_DEPT_CD
+             , C.DEPT_NM                          AS CUR_DEPT_NM
+             , A.RMK
+             , A.ORGCHT_DATA_YN
+             , FN_UPT2VC(A.UPT_DT)                AS CHK_DT
+        FROM HRM_REORGAN_DESP A
+                 LEFT OUTER JOIN HRM_DEPT B
+                                 ON A.PREV_DEPT_CD = B.DEPT_CD
+                 LEFT OUTER JOIN HRM_DEPT C
+                                 ON A.CUR_DEPT_CD = C.DEPT_CD
+        WHERE A.STRUCT_DT = #{structDt}
+        ORDER BY SEQ
+    </select>
+</mapper>

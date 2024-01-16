@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="act_0004">
+
+    <select id="act_bank_list" resultType="ActBank">
+        SELECT BK_CD,
+               BK_NM,
+               BK_NM_ENG,
+               REG_NO,
+               POST_NO,
+               ADDR,
+               ADDR_DTL,
+               TEL_NO,
+               FAX_NO,
+               CHRG_NM,
+               HP_NO,
+               USE_YN
+        FROM ACT_BANK
+        WHERE BK_NM LIKE '%' || #{bkNm} || '%'
+        ORDER BY BK_CD
+    </select>
+
+</mapper>

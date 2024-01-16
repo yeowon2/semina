@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hrm_0100">
+    <select id="searchAppntLst" parameterType="HashMap" resultMap="rqstAppntInfo">
+        SELECT A.APPNT_NO
+             , FN_GET_COMM_NM(E.APV_STAT_CD)  AS APV_STAT_NM
+             , FN_GET_EMP_NM(A.RQST_EMP_NO)   AS RQST_EMP_NM
+             , A.RQST_EMP_NO
+             , FN_GET_DEPT_NM(A.RQST_DEPT_CD) AS RQST_DEPT_NM
+             , A.RQST_DT
+             , A.APPNT_DT
+             , A.APPNT_SBJ
+             , A.RMK
+             , E.GW_DOC_NO
+        FROM HRM_APPNT_NO A
+                 LEFT OUTER JOIN COM_RQST_NO E
+                                 ON A.APPNT_NO = E.RQST_NO AND E.PGM_ID = 'hrm_0105'
+        WHERE A.RQST_EMP_NO LIKE #{empNo} || '%'
+          AND A.APPNT_DT &gt;= NVL(TO_CHAR(TO_DATE(#{frDt}, 'YYYY-MM-dd'), 'yyyyMMdd'), '19001231')
+          AND A.APPNT_DT &lt;= NVL(TO_CHAR(TO_DATE(#{toDt}, 'YYYY-MM-dd'), 'yyyyMMdd'), '99991231')
+          AND A.APPNT_SBJ LIKE '%' || #{appntCont} || '%'
+        ORDER BY A.APPNT_DT
+    </select>
+
+    <select id="getAppnNotMst" resultMap="rqstAppntInfo">
+        SELECT A.APPNT_NO
+             , E.APV_STAT_CD
+             , FN_GET_COMM_NM(E.APV_STAT_CD)  AS APV_STAT_NM
+             , FN_GET_EMP_NM(A.RQST_EMP_NO)   AS RQST_EMP_NM
+             , A.RQST_EMP_NO
+             , FN_GET_DEPT_NM(A.RQST_DEPT_CD) AS RQST_DEPT_NM
+             , A.RQST_DEPT_CD
+             , A.RQST_DT
+             , A.APPNT_DT
+             , A.APPNT_SBJ
+             , A.RMK
+             , FN_UPT2VC(A.UPT_DT)            AS CHK_DT
+        FROM HRM_APPNT_NO A
+                 LEFT OUTER JOIN COM_RQST_NO E
+                                 ON A.APPNT_NO = E.RQST_NO AND E.PGM_ID = 'hrm_0105'
+        WHERE A.APPNT_NO = #{appntNo}
+    </select>
+
+    <select id="searchAppnNoApvLst" parameterType="HashMap" resultType="HrmAppntApv">
+        SELECT APPNT_NO
+             , EMP_NO
+             , FN_GET_EMP_NM(A.EMP_NO)       AS EMP_NM
+             , DUTY_DEG
+             , APPNT_DT
+             , SEQ
+             , NVL(DUP_APPNT_YN, 'N')        AS DUP_APPNT_YN
+             , APPNT_CD
+             , BUSI_PLC_CD
+             , APPNT_DTL_CD
+             , NO_PAID_YN
+             , UP_DEPT_CD
+             , FN_GET_DEPT_NM(A.UP_DEPT_CD)  AS UP_DEPT_NM
+             , DEPT_CD
+             , FN_GET_DEPT_NM(A.DEPT_CD)     AS DEPT_NM
+             , DEPT_ORG_CD
+             , FN_GET_DEPT_NM(A.DEPT_ORG_CD) AS DEPT_ORG_NM
+             , EMP_CLS
+             , JOB_TP
+             , GRD_CD
+             , JOB_POST
+             , ASSIN_CD
+             , TIME_CLS
+             , PRSN_CLS
+             , HRM_GRD
+             , PAY_GRD
+             , TECH_GRD
+             , WRK_CLS
+             , RGLR_YN
+             , SYNT_GRD_CD
+             , APPNT_TO_DT
+             , RMK
+             , PAY_DEPT_CD
+             , SAL_STEP
+             , EMP_NO                        AS PK_EMP_NO
+             , DUTY_DEG                      AS PK_DUTY_DEG
+             , APPNT_DT                      AS PK_APPNT_DT
+             , SEQ                           AS PK_SEQ
+             , NVL(DUP_APPNT_YN, 'N')           PK_DUP_APPNT_YN
+             , APPNT_CD                      AS PK_APPNT_CD
+             , FN_UPT2VC(A.UPT_DT)           AS CHK_DT
+             , ORD_SEQ
+        FROM HRM_APPNT_APV A
+        WHERE APPNT_NO = #{appntNo}
+        ORDER BY A.ORD_SEQ, A.SEQ
+    </select>
+
+    <resultMap id="rqstAppntInfo" type="HrmAppntNo" autoMapping="true">
+        <id property="appntNo" column="APPNT_NO"/>
+        <association property="comRqstNo" javaType="ComRqstNo" autoMapping="false">
+            <result property="gwDocNo" column="GW_DOC_NO"/>
+            <result property="apvStatNm" column="APV_STAT_NM"/>
+        </association>
+    </resultMap>
+</mapper>

@@ -1,0 +1,43 @@
+.top .btn_container {
+    display: flex;
+    justify-content: right;
+}
+
+.top .btn_container button {
+    margin: 5px;
+}
+
+.param_container {
+    display: flex;
+}
+
+.param_container > div {
+    margin: 1rem;
+}
+
+.bottom {
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.bottom .left {
+    width: calc(70% - 20px);
+
+}
+
+.bottom .right {
+    width: 30%;
+}
+
+.left_top, .right_top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.button {
+    font-size: 0.6rem;
+    padding: 0.3rem 1rem;
+}

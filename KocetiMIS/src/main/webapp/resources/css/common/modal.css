@@ -1,0 +1,72 @@
+.modal_bg {
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 100vw;
+    height: calc(var(--vh, 1vh) * 100);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 99999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s, visibility 0.25s;
+    flex-wrap: wrap;
+}
+
+.modal_bg.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal_bg .modal {
+    background-color: #fff;
+    padding: 30px;
+    height: fit-content;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    position: relative;
+}
+
+.modal_bg .modal .modal_close_btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    cursor: pointer;
+    height: 30px;
+    width: 30px;
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal_bg .modal .modal_close_btn:hover {
+    background: #00000020;
+}
+
+.modal_bg .modal .modal_close_btn .icon {
+    font-size: 22px;
+}
+
+.modal_bg .modal .modal_title {
+    color: var(--primary-color);
+    margin-bottom: 30px;
+    font-size: 1.6rem;
+    font-weight: 600;
+}
+
+@media screen and (max-width: 600px), (max-height: 650px) {
+    .modal_bg {
+        padding: 10px;
+    }
+
+    .modal_bg .modal {
+        overflow-y: scroll;
+        padding: 20px;
+        height: 100%;
+    }
+}

@@ -1,0 +1,103 @@
+.top .btn_container {
+    display: flex;
+    justify-content: right;
+}
+
+.top .btn_container button {
+    margin: 5px;
+}
+
+.param_container > div {
+    margin: 1rem;
+}
+
+.bottom {
+    display: flex;
+}
+
+.bottom > div {
+    width: calc(50% - 10px);
+}
+
+.left {
+    margin-right: 10px;
+}
+
+.right {
+    margin-left: 10px;
+}
+
+.left_top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.scroll_layout {
+    overflow-x: auto;
+    margin-top: 7px;
+}
+
+.bk_info_wrap {
+    margin-top: 5px;
+    min-width: 530px;
+}
+
+.bk_info_wrap .row {
+    display: flex;
+    margin-bottom: 5px;
+    align-items: center;
+}
+
+.bk_info_wrap .row > .col:first-child {
+    margin-right: 10px;
+}
+
+.bk_info_wrap .row .col {
+    display: flex;
+    width: calc((100% - 10px) / 2);
+    align-items: center;
+}
+
+.bk_info_wrap .row label {
+    width: 90px;
+}
+
+.input {
+    height: 30px;
+    border: 1px solid #ddd;
+    padding: 0 8px;
+    background-color: #fff;
+    border-radius: 3px;
+    width: calc(100% - 90px);
+}
+
+.search {
+    display: flex;
+    justify-content: space-between;
+}
+
+.lage_input {
+    width: calc(100% - 210px);
+    min-width: 100px;
+    margin-left: 10px;
+}
+
+.small_input {
+    width: 110px;
+}
+
+.search > input {
+    width: calc(100% - 32px);
+    border: none;
+}
+
+.search > button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.input:focus, .search > input:focus {
+    outline: none;
+}

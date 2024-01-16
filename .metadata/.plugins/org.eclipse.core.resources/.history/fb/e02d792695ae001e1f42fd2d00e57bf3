@@ -1,0 +1,30 @@
+package kr.co.kwins.hello.controller;
+
+import java.awt.print.Book;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class RootController {
+
+	@GetMapping
+	String index() {
+		return "index";
+	}
+	
+	@GetMapping("/list")
+	List<Book> list() {
+		List<Book> list = new ArrayList<>();
+		
+		list.add(new Book(1, "도서명_1", "출판사_1", 1000));
+		list.add(new Book(1, "도서명_1", "출판사_1", 1000));
+		list.add(new Book(1, "도서명_1", "출판사_1", 1000));
+		list.add(new Book(1, "도서명_1", "출판사_1", 1000));
+		list.add(new Book(1, "도서명_1", "출판사_1", 1000));
+		
+		return list;
+	}
+}

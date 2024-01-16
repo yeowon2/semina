@@ -1,0 +1,16 @@
+.modal_bg.dept_sch .search_container {
+  margin-bottom: 20px;
+}
+.modal_bg.dept_sch .search_container .btn_container {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: end;
+}
+.modal_bg.dept_sch #deptSchModalSearchForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/*# sourceMappingURL=dept_sch.css.map */

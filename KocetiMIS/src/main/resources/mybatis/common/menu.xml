@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Menu">
+
+    <select id="findByMenuList" resultType= "Menu">
+        SELECT A.MENU_ID AS MENU_ID
+              ,A.PGM_ID AS PGM_ID
+              ,SUBSTR(A.PGM_ID, 1,3) AS PGM_LINK
+              ,SUBSTR(REPLACE(A.PGM_ID, '_', '-'),1, 8) AS PGM_URL
+              ,CASE
+                WHEN A.LEV = '2' THEN D.MENU_NM
+                ELSE A.MENU_NM
+               END AS MENU_NM
+              ,A.LEV AS LEV
+              ,A.UP_MENU_ID AS UP_MENU_ID
+              ,A.USE_YN AS USE_YN
+              ,A.ORD_NO AS ORD_NO
+              ,A.CLS_CD AS CLS_CD
+              ,A.RMK AS RMK
+        FROM SYS_MENU_MGT A
+        LEFT OUTER JOIN SYS_PGM_MGT B
+            ON A.PGM_ID = B.PGM_ID
+        LEFT OUTER JOIN
+        (
+            SELECT UP_MENU_ID
+                  ,COUNT(MENU_ID) AS CNT
+            FROM SYS_MENU_MGT
+            WHERE USE_YN != 'N'
+            GROUP BY UP_MENU_ID
+        ) C
+            ON A.MENU_ID = C.UP_MENU_ID
+        LEFT OUTER JOIN
+        (
+            SELECT MENU_ID AS MENU_ID
+                  ,CASE
+                       WHEN MENU_NM LIKE '%/%' THEN SUBSTR(MENU_NM, 1, INSTR(MENU_NM, '/')-2)
+                       ELSE MENU_NM
+                   END AS MENU_NM
+            FROM SYS_MENU_MGT
+            WHERE LEV ='2'
+        ) D
+            ON A.MENU_ID = D.MENU_ID
+        WHERE A.USE_YN != 'N'
+        AND SUBSTR(A.UP_MENU_ID, 1, 5) = #{menuCls}/* 'M_MIS'  M_MIS, M_PMS 등 구분 */
+        CONNECT BY	PRIOR A.MENU_ID = A.UP_MENU_ID
+        START WITH	A.UP_MENU_ID IS NULL
+        ORDER SIBLINGS BY A.ORD_NO
+    </select>
+
+</mapper>

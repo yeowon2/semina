@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="bdg0022">
+
+    <select id = "findByBdgPlcItmCdList" resultType="BdgPlcItmCd">
+        SELECT A.PLC_ITM_CD AS PLC_ITM_CD
+              ,A.PLC_ITM_NM AS PLC_ITM_NM
+              ,A.USE_YN AS USE_YN
+              ,A.BUSI_PLC_CD AS BUSI_PLC_CD
+              ,'A1' AS BUSI_PLC_LVL
+        FROM BDG_PLC_ITM_CD A
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test ="busiPlcCd != null and busiPlcCd != undefined and busiPlcCd != ''">
+                AND A.BUSI_PLC_CD = #{busiPlcCd}
+            </if>
+            <if test ="plcItmNm != null and plcItmNm != undefined and plcItmNm != ''">
+                AND REPLACE(A.PLC_ITM_NM, ' ', '') LIKE '%' || REPLACE(#{plcItmNm}, ' ', '') || '%'
+            </if>
+            <if test ="useYn != null and useYn != undefined and useYn != ''">
+                AND A.USE_YN = #{useYn}
+            </if>
+        </trim>
+        ORDER BY PLC_ITM_CD
+    </select>
+
+    <select id = "findByBdgPlcList" resultType="Bdg0022Tree">
+        SELECT A.PLC_BUDG_CD AS PLC_BUDG_CD
+              ,A.UP_PLC_BUDG_CD AS UP_PLC_BUDG_CD
+              ,A.UP_PLC_ITM_CD AS UP_PLC_ITM_CD
+              ,A.PLC_ITM_CD AS PLC_ITM_CD
+              ,A.PLC_BUDG_NM AS PLC_BUDG_NM
+              ,A.BUDG_YY AS BUDG_YY
+              ,A.BUSI_PLC_CD AS BUSI_PLC_CD
+              ,A.BDG_STD_CD AS BDG_STD_CD
+              ,A.IE_CLS AS IE_CLS
+              ,A.BDG_REF_CD AS BDG_REF_CD
+              ,A.BUSI_YN AS BUSI_YN
+              ,A.DEPT_BDG_YN AS DEPT_BDG_YN
+              ,A.LEV AS BUSI_PLC_LVL
+              ,A.ORD_NO AS ORD_NO
+              ,A.BUSI_PLC_SEQ AS BUSI_PLC_SEQ
+              ,A.USE_YN AS USE_YN
+        FROM	BDG_PLC_BUDG_CD A
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test ="budgYy != null and budgYy != undefined and budgYy != ''">
+                AND A.BUDG_YY = #{budgYy}
+            </if>
+            <if test ="busiPlcCd != null and busiPlcCd != undefined and busiPlcCd != ''">
+                AND A.BUSI_PLC_CD = #{busiPlcCd}
+            </if>
+        </trim>
+        ORDER BY A.LEV, A.ORD_NO
+    </select>
+
+
+    <select id="findByBdgStdCodeList" resultType="Code">
+        SELECT A.BDG_STD_CD AS CODE
+              ,A.BDG_STD_NM || ' (' || TRIM (TO_CHAR (NVL (BDG_CNT, 0))) || '개 과제)' AS NAME
+        FROM PAD_BDG_STD_MGT A
+        LEFT OUTER JOIN
+        (
+            SELECT BDG_STD_CD
+                  ,COUNT (BUDG_CD) AS BDG_CNT
+            FROM BDG_BUDG_CD
+            WHERE NVL(#{budgYy}, TO_CHAR (SYSDATE, 'YYYY')) BETWEEN TO_CHAR (TO_DATE (BDG_FRM_DT, 'YYYYMMDD'), 'YYYY') AND TO_CHAR (TO_DATE (BDG_TO_DT, 'YYYYMMDD'), 'YYYY')
+            GROUP BY BDG_STD_CD
+        ) B
+        ON A.BDG_STD_CD = B.BDG_STD_CD
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test='busiYn != null and busiYn != undefined and busiYn != "" '>
+                AND A.BUSI_YN = #{busiYn}
+            </if>
+            <if test='budgYy != null and budgYy != undefined != budgYy != "" '>
+                AND NVL(A.BUDG_YY, NVL(#{budgYy}, TO_CHAR (SYSDATE, 'YYYY'))) = #{budgYy}
+            </if>
+        </trim>
+    </select>
+</mapper>

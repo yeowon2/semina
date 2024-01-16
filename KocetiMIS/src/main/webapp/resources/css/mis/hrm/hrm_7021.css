@@ -1,0 +1,28 @@
+
+label {
+    font-size: 1.1rem;
+    color : #6d6d6d;
+    font-weight: 400;
+}
+
+.body .btn_container {
+    display: flex;
+    justify-content: right;
+}
+
+.body .btn_container button {
+    margin : 3px;
+}
+
+.body .search_container {
+    display: flex;
+    justify-content: left;
+}
+
+.body .search_container input {
+    margin : 10px;
+}
+
+#grid {
+    margin-top: 10px;
+}

@@ -1,0 +1,147 @@
+@import url("/resources/css/font.css");
+:root {
+  --primary-color: #386de1;
+  --line-color: #dddddd;
+}
+
+* {
+  margin: 0;
+  font-family: "Pretendard", sans-serif;
+  box-sizing: border-box;
+  color: #333;
+}
+
+a {
+  color: #333;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+.btn {
+  cursor: pointer;
+  border-radius: 3px;
+  box-shadow: 1px 1px 4px 0 #d5d5d5;
+  border: none;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+.btn.primary_btn {
+  background-color: var(--primary-color);
+  padding: 0.5rem 1rem;
+  color: #fff;
+}
+.btn.primary_btn:hover {
+  background-color: #113a95;
+}
+.btn.white_btn {
+  background-color: #fff;
+  padding: 0.5rem 1rem;
+  color: var(--primary-color);
+}
+.btn.white_btn:hover {
+  background-color: #efefef;
+}
+.btn.gray_btn {
+  background-color: #dddddd;
+  padding: 0.5rem 1rem;
+  color: #333;
+}
+.btn.danger_btn {
+  background-color: #dc3545;
+  padding: 0.5rem 1rem;
+  color: #fff;
+}
+.btn.danger_btn:hover {
+  background-color: #b41827;
+}
+.btn.excel_btn {
+  background-color: #107a40;
+  padding: 0.5rem 1rem;
+  color: #fff;
+}
+
+.input_text {
+  height: 30px;
+  border: 1px solid #cfcfcf;
+  padding: 0 8px;
+  background-color: #fff;
+  border-radius: 3px;
+  transition: all 0.2s;
+}
+.input_text.emp_nm {
+  max-width: 85px;
+}
+.input_text.emp_no {
+  max-width: 70px;
+}
+.input_text.dept_nm {
+  max-width: 150px;
+}
+.input_text.dept_no {
+  max-width: 80px;
+}
+.input_text[readonly=true], .input_text[readonly] {
+  background-color: #efefef;
+  cursor: initial;
+}
+.input_text:focus {
+  outline: none;
+  border: 1px solid var(--primary-color);
+}
+
+.input_box_wrap {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.input_box {
+  display: flex;
+  flex-direction: column;
+}
+.input_box .checkbox_wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.input_box .checkbox_wrap > div {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.input_box > label {
+  font-size: 0.9375rem;
+  font-weight: 400;
+  color: #545454;
+  margin-bottom: 3px;
+}
+
+.grid_container {
+  flex-grow: 1;
+  min-height: 0;
+}
+
+.search_wrap {
+  flex-grow: 1;
+  display: flex;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+}
+.search_wrap .search_btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.search_wrap .search_input {
+  border: none !important;
+}
+.search_wrap > .search_input:focus {
+  outline: none;
+}
+
+/*# sourceMappingURL=index.css.map */

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hrm_3010">
+
+    <select id="searchBasMgt" resultType="Hrm_3010" parameterType="java.util.Map">
+        SELECT D.DEPT_NM,
+               A.EMP_NO,
+               A.EMP_NM,
+               CASE
+                   WHEN A.RES_NO IS NULL THEN NULL
+                   ELSE SUBSTR (#{bsDt}, 1, 4) -
+                        CASE
+                            WHEN SUBSTR(PKG_UTIL_ENDECODE.GET_ENCRYPT_DECODE(A.RES_NO, 'HRM_BAS_MGT.RES_NO'), 7, 1) IN ('1', '2', '5', '6')
+                                THEN '19' || SUBSTR(PKG_UTIL_ENDECODE.GET_ENCRYPT_DECODE(A.RES_NO, 'HRM_BAS_MGT.RES_NO'), 0, 2)
+                            ELSE '20' || SUBSTR(PKG_UTIL_ENDECODE.GET_ENCRYPT_DECODE(A.RES_NO, 'HRM_BAS_MGT.RES_NO'), 0, 2)
+                            END
+               END AS AGE,
+               CASE A.SEX_DIST WHEN 'M' THEN '남' WHEN 'F' THEN '여' END AS SEX_DIST,
+               CASE
+                   WHEN #{resNoYn} = 'Y'
+                       THEN SUBSTR(PKG_UTIL_ENDECODE.GET_ENCRYPT_DECODE ( A.RES_NO, 'HRM_BAS_MGT.RES_NO' ), 1, 6) || ' - ' || SUBSTR(PKG_UTIL_ENDECODE.GET_ENCRYPT_DECODE ( A.RES_NO, 'HRM_BAS_MGT.RES_NO' ), 7, 7)
+                   WHEN #{resNoYn} = 'N'
+                       THEN SUBSTR(PKG_UTIL_ENDECODE.GET_ENCRYPT_DECODE ( A.RES_NO, 'HRM_BAS_MGT.RES_NO' ), 1, 6) || ' - ' || SUBSTR(PKG_UTIL_ENDECODE.GET_ENCRYPT_DECODE ( A.RES_NO, 'HRM_BAS_MGT.RES_NO' ), 7, 1) || '******'
+               END AS RES_NO,
+               CASE
+                   WHEN B.RSIGN_DT = '99991231' THEN '재직'
+                   WHEN B.RSIGN_DT <![CDATA[ < ]]> #{bsDt} THEN '퇴직'
+                   WHEN B.RSIGN_DT >= #{bsDt} THEN '재직'
+               END AS HOLD_OFFI_NM,
+               FN_GET_COMM_NM(C.EMP_CLS) AS EMP_CLS_NM,
+               FN_GET_COMM_NM(C.JOB_TP) AS JOB_TP_NM,
+               FN_GET_COMM_NM(C.GRD_CD) AS GRD_NM,
+               FN_GET_COMM_NM(C.JOB_POST) AS JOB_POST_NM,
+               FN_GET_COMM_NM(C.ASSIN_CD) AS ASSIN_NM,
+               FN_GET_COMM_NM(C.SAL_STEP) AS SAL_STEP,
+               FN_GET_COMM_NM(B.ENT_CLS) AS ENT_CLS_NM,
+               FN_GET_COMM_NM(B.EMPL_CLS) AS EMPL_CLS_NM,
+               B.ENT_DT,
+               GUNSOK_DT,
+               H.APPNT_NM AS RSIGN_CLS,
+               NULLIF(RSIGN_DT, '99991231') AS RSIGN_DT,
+               CASE
+                   WHEN SCHL_DEG IS NOT NULL THEN FN_GET_COMM_NM (E.SCHL_DEG) ||'(' || FN_GET_COMM_NM(E.GDUTN_DIV_CD)|| ')'
+                   ELSE ''
+               END AS LAST_SCHLA,
+               E.SCHL_NM AS LAST_SCHL_NM,
+               A.EMAIL_ADDR,
+               C1.ORD_NO AS JOB_POST_ORD_NO,
+               C2.ORD_NO AS JOB_TP_ORD_NO,
+               C3.ORD_NO AS GRD_CD_ORD_NO
+        FROM HRM_BAS_MGT A
+            INNER JOIN HRM_BAS_DTL B ON A.EMP_NO = B.EMP_NO
+            INNER JOIN HRM_APPNT C ON A.EMP_NO = C.EMP_NO AND B.DUTY_DEG = C.DUTY_DEG
+            LEFT OUTER JOIN HRM_DEPT D ON C.DEPT_CD = D.DEPT_CD
+            LEFT OUTER JOIN HRM_SCHLA E ON A.EMP_NO = E.EMP_NO AND E.LAST_SCHL_YN = 'Y'
+            LEFT JOIN COM_CORP F ON C.BUSI_PLC_CD = F.CORP_CD
+            LEFT OUTER JOIN VI_SYS_USER G ON A.EMP_NO = G.EMP_NO
+            LEFT OUTER JOIN HRM_APPNT_CD H ON B.RSIGN_CLS = H.APPNT_CD
+            LEFT OUTER JOIN COM_STD_MGT C1 ON C.JOB_POST = C1.COMM_CD
+            LEFT OUTER JOIN COM_STD_MGT C2 ON C.JOB_TP = C2.COMM_CD
+            LEFT OUTER JOIN COM_STD_MGT C3 ON C.GRD_CD = C3.COMM_CD
+        WHERE C.APPNT_DT || C.SEQ = FN_HRM_GET_APPNT(A.EMP_NO, B.DUTY_DEG, #{bsDt}, DUP_APPNT_YN)
+          AND C.DUP_APPNT_YN = 'N'
+          AND A.EMP_NM LIKE #{empNm} || '%'
+          AND NVL(A.SEARCH_YN, 'Y') != 'N'
+          AND D.DEPT_NM LIKE #{deptNm} || '%'
+          AND A.EMP_NO NOT IN ('0000000', '0000001','subal1','subal2','subal1','subal2')
+          <if test="deptCd != null and deptCd != ''">
+              AND C.DEPT_CD IN (SELECT DEPT_CD FROM TABLE (PKG_HRM_GRP_DEPT.GET_GRP_DEPT_CD (#{deptCd})))
+          </if>
+          <if test="incldRsign == 'Y'">
+              AND #{bsDt} >= B.ENT_DT
+          </if>
+          <if test="incldRsign == '' or incldRsign == null">
+              AND #{bsDt} BETWEEN B.ENT_DT AND NVL(B.RSIGN_DT, '99991231')
+          </if>
+          <if test="empCls != '' and empCls != null">
+              AND C.EMP_CLS IN
+              <foreach collection="empClsList" item="empCls" open="(" close=")" separator=",">
+                  #{empCls}
+              </foreach>
+          </if>
+          <if test="jobTp != null and jobTp != ''">
+              AND C.JOB_TP IN
+              <foreach collection="jobTpList" item="jobTp" open="(" close=")" separator=",">
+                  #{jobTp}
+              </foreach>
+          </if>
+          <if test="grdCd != null and grdCd != ''">
+              AND C.GRD_CD IN
+              <foreach collection="grdCdList" item="grdCd" open="(" close=")" separator=",">
+                  #{grdCd}
+              </foreach>
+          </if>
+          <if test="assinCd != null and assinCd != ''">
+              AND C.ASSIN_CD IN
+              <foreach collection="assinCdList" item="assinCd" open="(" close=")" separator=",">
+                  #{assinCd}
+              </foreach>
+          </if>
+          <if test="sexDist != null and sexDist != ''">
+              AND A.SEX_DIST IN
+              <foreach collection="sexDistList" item="sexDist" open="(" close=")" separator=",">
+                  #{sexDist}
+              </foreach>
+          </if>
+        ORDER BY C.BUSI_PLC_CD, D.ORD_NO, JOB_POST_ORD_NO, JOB_TP_ORD_NO, GRD_CD_ORD_NO, A.EMP_NO
+    </select>
+</mapper>

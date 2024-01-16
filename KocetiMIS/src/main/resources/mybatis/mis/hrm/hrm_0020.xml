@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hrm_0020">
+
+    <select id="getDept" resultType="DeptTree">
+        SELECT A.DEPT_ORG_CD
+             , NVL(C.CHG_CLS_CD, '145-010')   AS CHG_CLS_CD
+             , A.DEPT_GRP_CD
+             , A.STRUCT_DT
+             , A.DEPT_CD
+             , A.DEPT_NM
+             , A.UP_DEPT_CD
+             , A.LEV
+             , A.ORD_NO
+             , FN_GET_EMP_NM(A.DEPT_EMP_NO)   AS DEPT_EMP_NM
+             , A.DEPT_EMP_NO
+             , A.TEAM_YN
+             , A.DEPT_CLS
+             , FN_GET_DEPT_NM(A.POST_DEPT_CD) AS POST_DEPT_NM
+             , A.POST_DEPT_CD
+             , A.DEPT_ENG_NM
+             , A.USE_YN
+             , A.DEPT_CD                      AS PREV_DEPT_CD
+             , B.DEPT_FRM_DT
+             , B.DEPT_TO_DT
+             , D.DEPT_CD                      AS ORGIN_DEPT_CD
+             , FN_UPT2VC(A.UPT_DT)            AS CHK_DT
+        FROM HRM_ORGCHT A
+                 INNER JOIN HRM_DEPT B
+                            ON A.DEPT_GRP_CD = B.DEPT_GRP_CD
+                                AND A.DEPT_CD = B.DEPT_CD
+                 LEFT OUTER JOIN (SELECT DISTINCT STRUCT_DT
+                                                , CHG_CLS_CD
+                                                , PREV_DEPT_CD
+                                                , NULL AS CUR_DEPT_CD
+                                  FROM HRM_REORGAN_DESP
+                                  WHERE CHG_CLS_CD = '145-050'
+                                    AND ORGCHT_DATA_YN = 'Y'
+                                  UNION ALL
+                                  SELECT DISTINCT STRUCT_DT
+                                                , CHG_CLS_CD
+                                                , NULL AS PREV_DEPT_CD
+                                                , CUR_DEPT_CD
+                                  FROM HRM_REORGAN_DESP
+                                  WHERE CHG_CLS_CD NOT IN '145-050' AND ORGCHT_DATA_YN = 'Y') C
+                                 ON A.STRUCT_DT = C.STRUCT_DT AND
+                                    A.DEPT_CD = DECODE(C.CHG_CLS_CD, '145-050', C.PREV_DEPT_CD, C.CUR_DEPT_CD)
+                 LEFT OUTER JOIN (SELECT A.DEPT_GRP_CD, A.DEPT_CD, A.POST_DEPT_CD
+                                  FROM HRM_ORGCHT A
+                                           LEFT OUTER JOIN HRM_DEPT_STRUCT B
+                                                           ON A.STRUCT_DT = B.STRUCT_DT
+                                  WHERE B.STRUCT_DT = (SELECT MAX(STRUCT_DT)
+                                                       FROM HRM_DEPT_STRUCT
+                                                       WHERE STRUCT_DT &lt; #{structDt})) D
+                                 ON A.DEPT_GRP_CD = D.DEPT_GRP_CD
+        WHERE A.STRUCT_DT = #{structDt}
+        ORDER BY A.ORD_NO
+    </select>
+
+    <select id="searchStruct" resultType="HrmDeptStruct">
+        SELECT STRUCT_DT
+             , CUR_YN
+             , RMK
+        FROM HRM_DEPT_STRUCT
+        ORDER BY STRUCT_DT DESC
+    </select>
+</mapper>

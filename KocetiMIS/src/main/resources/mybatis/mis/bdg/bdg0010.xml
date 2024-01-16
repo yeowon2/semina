@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="bdg0010">
+
+    <select id="findByBdgList" resultType="PadBdgStdMgt">
+        SELECT	A.BUDG_YY AS BUDG_YY
+               ,A.BDG_STD_CD AS BDG_STD_CD
+               ,A.BDG_STD_NM AS BDG_STD_NM
+               ,A.BDG_MTHD AS BDG_MTHD
+               ,A.BUSI_YN AS BUSI_YN
+        ,CASE
+            WHEN B.BDG_STD_CD IS NOT NULL
+            OR C.BDG_STD_CD IS NOT NULL THEN 'N'
+            ELSE 'Y'
+            END AS DEL_YN
+        FROM PAD_BDG_STD_MGT A
+        LEFT OUTER JOIN
+        (
+            SELECT BDG_STD_CD
+            FROM BDG_PLC_BUDG_CD
+            GROUP BY BDG_STD_CD
+        ) B
+            ON A.BDG_STD_CD	= B.BDG_STD_CD
+        LEFT OUTER JOIN
+        (
+            SELECT BDG_STD_CD
+            FROM BUS_FRM_MGT
+            GROUP BY BDG_STD_CD
+        ) C
+            ON A.BDG_STD_CD = C.BDG_STD_CD
+            <trim prefix ="WHERE" prefixOverrides="AND">
+                <if test ="budgYy != null and budgYy != undefined and budgYy != ''">
+                    AND A.BUDG_YY = #{budgYy}
+                </if>
+                <if test="busiYn != null and busiYn != undefined and busiYn != ''">
+                    AND A.BUSI_YN = #{busiYn}
+                </if>
+            </trim>
+        ORDER BY A.BDG_STD_CD
+    </select>
+
+    <select id ="findByBdgDtlListY" resultType="Bdg0010Tree">
+        SELECT	A.LEV
+               ,B.EXPN_ITM_NM AS DIV
+               ,B.EXPN_ITM_CD AS DIV_CD
+               ,A.UP_EXPN_ITM_CD AS UP_DIV_CD
+        FROM	BUS_FRM_MGT A
+        INNER	JOIN	BDG_EXPN_CD B
+        ON	A.EXPN_ITM_CD	=	B.EXPN_ITM_CD
+        WHERE	A.BDG_STD_CD	=	#{bdgStdCd}
+        /*START WITH	A.LEV			=	'1'
+        CONNECT BY PRIOR	A.BDG_STD_CD	=	A.BDG_STD_CD
+        AND PRIOR	A.EXPN_ITM_CD	=	A.UP_EXPN_ITM_CD*/
+        ORDER BY A.ORD_NO
+    </select>
+
+    <select id ="findByBdgDtlListN" resultType="Bdg0010Tree">
+        SELECT	DIV AS DIV
+             ,DIV_CD AS DIV_CD
+             ,UP_DIV_CD AS UP_DIV_CD
+             ,LEV - (SELECT	MIN (LEV)
+                     FROM	BDG_PLC_BUDG_CD
+                     WHERE	BUDG_YY		=	#{budgYy}
+                       AND	BDG_STD_CD	=	#{bdgStdCd}) + 1 AS LEV
+        FROM	(SELECT	PLC_BUDG_CD AS DIV_CD
+                      ,UP_PLC_BUDG_CD AS UP_DIV_CD
+                      ,PLC_BUDG_NM AS DIV
+                      ,LEV
+                 FROM	BDG_PLC_BUDG_CD
+                 WHERE	BDG_STD_CD	=	#{bdgStdCd}
+                   AND	BUDG_YY		=	#{budgYy}
+                   AND	BUSI_PLC_CD	=	#{corpCd}
+                 UNION
+                 SELECT	B.EXPN_ITM_CD AS CD
+                      ,A.PLC_BUDG_CD AS UP_CD
+                      ,C.EXPN_ITM_NM AS DIV
+                      , A.LEV + 1 AS LEV
+                 FROM	BDG_PLC_BUDG_CD A
+                             INNER	JOIN	BDG_EXPN_JOIN_MGT B
+                                              ON	A.PLC_BUDG_CD	=	B.PLC_BUDG_CD
+                             INNER	JOIN	BDG_EXPN_CD C
+                                              ON	B.EXPN_ITM_CD	=	C.EXPN_ITM_CD
+                 WHERE	A.BUDG_YY		=	#{budgYy}
+                   AND	A.IE_CLS		=	'E'
+                   AND	A.BUSI_PLC_CD	=	#{corpCd}
+                   AND	A.BDG_STD_CD	=	#{bdgStdCd})
+    </select>
+</mapper>

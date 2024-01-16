@@ -1,0 +1,40 @@
+.top .btn_container {
+    display: flex;
+    justify-content: right;
+}
+
+.top .btn_container button {
+    margin: 5px;
+}
+
+.param_container {
+    display: flex;
+    flex-direction: row;
+}
+
+.param_container > div {
+    margin: 1rem;
+}
+
+.bottom_top {
+    display: flex;
+    justify-content: end;
+    margin-bottom: 10px;
+}
+
+.button {
+    font-size: 0.6rem;
+    padding: 0.3rem 1rem;
+}
+
+.grid_wrap {
+    display: flex;
+}
+
+#grid1 {
+    width: 60%;
+}
+
+#grid2 {
+    width: 40%;
+}

@@ -1,0 +1,19 @@
+logging:
+  level:
+    kr:
+      co:
+        jwins:
+          dao: trace
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath:mybatis/*.xml
+  type-aliases-package: kr.co.jwins.bookshop.model
+server:
+  port: 9090
+spring:
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    password: 1234
+    url: jdbc:oracle:thin:@localhost:1521:xe
+    username: book

@@ -1,0 +1,64 @@
+.modal_bg.emp_sch .modal {
+    .search_container #empSchModalSearchForm {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+
+        > div {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+
+            > {
+                div {
+                    flex-grow: 1;
+                    width: 100%;
+                }
+
+                .btn_container {
+                    > {
+                        button {
+                            height: 35px;
+                            padding: 0;
+                        }
+
+                        .reset_btn {
+                            flex-grow: 1;
+                        }
+
+                        .submit_btn {
+                            flex-grow: 2;
+                        }
+                    }
+
+                    display: flex;
+                    gap: 10px;
+                    justify-content: space-between;
+                    align-items: flex-end;
+                }
+
+                div > {
+                    label {
+                        font-size: 0.9rem;
+                        color: #6d6d6d;
+                        font-weight: 400;
+                    }
+
+                    input, select {
+                        width: 100%;
+                    }
+                }
+            }
+        }
+    }
+
+    .emp_grid_wrap {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    .search_container {
+        margin-bottom: 30px;
+    }
+}

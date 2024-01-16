@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="common">
+
+    <select id="getCodeList" resultType="Code">
+        SELECT COMM_CD AS CODE
+             ,COMM_NM AS NAME
+        FROM COM_STD_MGT
+        WHERE UP_COMM_CD = #{prefix}
+          AND USE_YN = 'Y'
+        ORDER BY ORD_NO
+    </select>
+
+    <select id="getCommonCodeList" resultMap="CommonCodeMap">
+        SELECT COMM_CD AS CODE, COMM_NM AS NAME, UP_COMM_CD AS PARENT_CODE
+        FROM COM_STD_MGT
+        <where>
+            <foreach collection="list" item="prefix" index="index">
+                OR COMM_CD LIKE #{prefix} || '-%'
+            </foreach>
+        </where>
+    </select>
+
+    <resultMap id="CommonCodeMap" type="CommonCode">
+        <id column="PARENT_CODE" property="parentCode"/>
+        <collection property="codeList" javaType="ArrayList" ofType="Code">
+            <result column="CODE" property="code"/>
+            <result column="NAME" property="name"/>
+        </collection>
+    </resultMap>
+
+    <select id="getAppntCodeList" resultType="Code">
+        SELECT APPNT_CD AS CODE, APPNT_NM AS NAME
+        FROM HRM_APPNT_CD
+    </select>
+
+    <select id="findByBusiPlcCd" resultType="ComCorp">
+        SELECT CORP_CD AS CORP_CD
+              ,CORP_NM AS CORP_NM
+        FROM COM_CORP
+    </select>
+</mapper>

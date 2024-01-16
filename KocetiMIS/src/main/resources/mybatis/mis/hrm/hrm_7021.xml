@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hrm_7021">
+    <select id="findByRetireeList" resultType="Hrm_7021">
+        SELECT A.EMP_NO AS EMP_NO
+              ,A.EMP_NM AS EMP_NM
+              ,PKG_UTIL_ENDECODE.GET_ENCRYPT_DECODE ( A.RES_NO, 'HRM_BAS_MGT.RES_NO' ) AS RES_NO
+              ,C.DEPT_NM AS DEPT_NM
+              ,E.SYNT_GRD_NM AS SYNT_GRD_NM
+              ,D.SCHL_DEG AS SCHLA
+              ,D.MJR AS MJR
+              ,F.APPNT_NM AS RSIGN_CLS
+              ,TO_DATE(NVL(B.RSIGN_DT, '99991231'))AS RSIGN_DT
+              ,TO_DATE(B.ENT_DT) AS ENT_DT
+              ,'' AS RMK
+              ,B.RSIGN_RSN AS RSIGN_RSN
+              ,B.RSIGN_COM AS RSIGN_COM
+              ,B.RSIGN_DEPT AS RSIGN_DEPT
+              ,B.RSIGN_GRD AS RSIGN_GRD
+              ,B.RSIGN_ADDR AS RSIGN_ADDR
+              ,B.RSIGN_HM_TEL AS RSIGN_HM_TEL
+              ,B.RSIGN_CELL_PON AS RSIGN_CELL_PON
+              ,B.RSIGN_EMAIL AS RSIGN_EMAIL
+              ,B.PART_TIME AS PART_TIME
+              ,B.EMP_CLS AS EMP_CLS
+        FROM HRM_BAS_MGT A
+        INNER JOIN HRM_BAS_DTL B
+            ON A.EMP_NO = B.EMP_NO
+            AND B.LAST_DATA_YN = 'Y'
+        INNER JOIN HRM_DEPT C
+            ON A.DEPT_CD = C.DEPT_CD
+        LEFT OUTER JOIN HRM_SCHLA D
+            ON A.EMP_NO = D.EMP_NO
+            AND D.LAST_SCHL_YN = 'Y'
+        LEFT OUTER JOIN HRM_SYNT_GRD E
+            ON B.SYNT_GRD_CD = E.SYNT_GRD_CD
+        LEFT OUTER JOIN HRM_APPNT_CD F
+            ON B.RSIGN_CLS = F.APPNT_CD
+        WHERE B.HOLD_OFFI = '101-050'
+        AND NVL(A.SEARCH_YN, 'Y') != 'N'
+        <if test="startDate != null and startDate != '' and endDate != null and endDate != '' ">
+            AND TO_DATE(B.RSIGN_DT, 'YYYY-MM-DD') BETWEEN #{startDate} AND #{endDate}
+        </if>
+        <if test = "empCls != null and empCls != '' ">
+            AND B.EMP_CLS IN
+            <foreach collection="empCls" item = "empCls"  open = "(" close = ")" separator=",">
+                #{empCls}
+            </foreach>
+        </if>
+        ORDER BY A.EMP_NO
+    </select>
+</mapper>

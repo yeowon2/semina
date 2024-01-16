@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="act_0007">
+
+    <select id="act_exchangeRate_list" resultType="ExchangeRate">
+        SELECT A.COMM_CD AS CURR_CD,
+               A.COMM_NM AS CURR_NM,
+               B.BASIC_RATE,
+               B.TT_SELL_RATE,
+               B.TT_BUY_RATE,
+               B.CASH_SELL_RATE,
+               B.CASH_BUY_RATE,
+               B.USA_RATE,
+               B.TC_SELL_RATE
+        FROM COM_STD_MGT A
+                 INNER JOIN VI_EXCHANGE B
+                            ON A.REF_CD = B.CURR_CD
+                                AND A.UP_COMM_CD = '614'
+        WHERE B.BASIC_DATE = #{basicDate}
+          and A.COMM_CD LIKE '%' || #{currCd} || '%'
+        ORDER BY B.CURR_CD
+
+    </select>
+
+</mapper>

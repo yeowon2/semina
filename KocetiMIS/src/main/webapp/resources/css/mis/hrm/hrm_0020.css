@@ -1,0 +1,11 @@
+.search_container {
+    margin-bottom: 1rem;
+}
+
+.search_container select {
+    height: 35px;
+    border: 1px solid #ddd;
+    padding: 0 8px;
+    background-color: #fff;
+    border-radius: 0;
+}

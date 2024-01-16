@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="act_0001">
+
+    <select id="act_cd_list" resultType="ActAcctCdTree">
+        SELECT A.ACCT_CD
+              ,A.ACCT_NM
+              ,A.ACCT_NM_ENG
+              ,A.ACCT_LEV
+              ,A.UP_ACCT_CD
+              ,B.ACCT_NM AS UP_ACCT_NM
+              ,A.DR_CR
+              ,A.SUBD_CD1
+              ,C.MGT_ITM_NM as SUBD_NM1
+              ,A.SUBD_CD2
+              ,D.MGT_ITM_NM as SUBD_NM2
+              ,A.ACCT_CHAR
+              ,A.USE_YN
+              ,A.ORD_NO
+              ,A.ACCT_CLSF
+        FROM ACT_ACCT_CD A
+                 LEFT OUTER JOIN ACT_ACCT_CD B
+                                 ON A.UP_ACCT_CD=B.ACCT_CD
+                 LEFT OUTER JOIN ACT_MGMT C
+                                 ON A.SUBD_CD1=C.MGT_ITM_CD
+                 LEFT OUTER JOIN ACT_MGMT D
+                                 ON A.SUBD_CD2=C.MGT_ITM_CD
+            START WITH A.UP_ACCT_CD IS NULL
+        CONNECT BY PRIOR A.ACCT_CD=A.UP_ACCT_CD
+        ORDER SIBLINGS BY  A.ACCT_LEV,A.ORD_NO
+    </select>
+    <select id="act_mgt_list" resultType="ActMgt">
+        SELECT A.MGT_ITM_CD,
+               B.MGT_ITM_NM,
+               A.SUBD_YN,
+               A.DR_INST_YN,
+               A.CR_INST_YN,
+               A.ACCT_CD
+        FROM ACT_ACCT_MGMT A
+                 JOIN ACT_MGMT B
+                      ON A.MGT_ITM_CD = B.MGT_ITM_CD
+        WHERE ACCT_CD LIKE UPPER(REPLACE(#{acctCd}, ' ', ''))
+    </select>
+
+</mapper>
